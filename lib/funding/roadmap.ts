@@ -10,6 +10,12 @@ export interface PlannedStep {
   description: string;
   action_url: string | null;
   dependency_sequence: number | null;
+  /**
+   * True for a fix to a readiness rule that is failing right now. Its prior
+   * "complete" status must never carry forward: the rule failing again means
+   * the fix needs doing again.
+   */
+  readiness_gap: boolean;
 }
 
 /** How to fix each readiness gap. Internal links go to the setup step; external links are official sources only. */
@@ -29,7 +35,7 @@ const GAP_PLAYBOOK: Record<string, { category: PlannedStep["category"]; title: s
   entity_documents_complete: { category: "documentation", title: "Upload formation and EIN documents", how: "Articles of Organization/Incorporation and your IRS EIN letter.", url: "/app/setup/documents" },
 };
 
-const GOAL_STEPS: Record<string, Omit<PlannedStep, "sequence" | "dependency_sequence">[]> = {
+const GOAL_STEPS: Record<string, Omit<PlannedStep, "sequence" | "dependency_sequence" | "readiness_gap">[]> = {
   equipment: [
     { category: "application_prep", title: "Get a written equipment quote", description: "Year, make, model, VIN/serial, mileage or hours, and price from the seller. Lenders price the deal off the specific unit.", action_url: "/app/setup/documents" },
     { category: "application_prep", title: "Confirm your down payment funds", description: "Many equipment lenders require a down payment. Have the funds sitting in your business account, not borrowed from another lender.", action_url: null },
@@ -65,7 +71,7 @@ const GOAL_STEPS: Record<string, Omit<PlannedStep, "sequence" | "dependency_sequ
  * No lender, partner, or payout data is an input — ordering is borrower-need only.
  */
 export function buildRoadmap(state: FundingState, readiness: ReadinessResult): PlannedStep[] {
-  const steps: Omit<PlannedStep, "sequence" | "dependency_sequence">[] = [];
+  const steps: Omit<PlannedStep, "sequence" | "dependency_sequence" | "readiness_gap">[] = [];
 
   for (const r of readiness.rule_results) {
     if (r.outcome !== "fail") continue;
@@ -118,6 +124,7 @@ export function buildRoadmap(state: FundingState, readiness: ReadinessResult): P
   return steps.map((s, i) => ({
     ...s,
     sequence: i + 1,
+    readiness_gap: i < gapCount,
     // The funding review always waits on the finished document package (the step before it).
     dependency_sequence: i === steps.length - 1 ? i : i >= gapCount && gapCount > 0 ? gapCount : null,
   }));

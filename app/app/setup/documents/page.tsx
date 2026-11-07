@@ -4,7 +4,7 @@ import { StepHeader } from "@/components/step-header";
 import { requireFundingContext } from "@/lib/dal";
 import { isProvided, requirementsForGoal } from "@/lib/funding/documents";
 import { sequenceProgress } from "@/lib/funding/sequence";
-import { markDocumentNotApplicable } from "../../actions";
+import { markDocumentNotApplicable, restoreDocumentApplicability } from "../../actions";
 
 const CLASS_LABEL = { required: "Required", conditionally_required: "If it applies", optional: "Helpful" } as const;
 
@@ -36,7 +36,14 @@ export default async function DocumentsStep() {
                 </span>
               </div>
               {provided && doc?.file_name && <p className="fm-small fm-muted">File: {doc.file_name}</p>}
-              {!na && (
+              {na ? (
+                <form action={restoreDocumentApplicability}>
+                  <input type="hidden" name="document_type" value={r.documentType} />
+                  <button type="submit" className="fm-link-btn fm-small">
+                    Actually, this applies — let me upload it
+                  </button>
+                </form>
+              ) : (
                 <DocumentUpload businessId={business.id} documentType={r.documentType} label={r.label} replacing={provided} />
               )}
               {r.classification !== "required" && !provided && !na && (

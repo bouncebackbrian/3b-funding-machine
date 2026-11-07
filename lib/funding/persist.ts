@@ -96,7 +96,9 @@ export async function runReadinessAndRoadmap(
       funding_profile_id: profile.id,
       equipment_request_id: profile.funding_goal_type === "equipment" ? (state.equipment?.id ?? null) : null,
       strategy_version: version,
-      status: "active",
+      // Inserted inactive; only published once every step is saved, so a failed
+      // step insert can never replace a working roadmap with an empty one.
+      status: "superseded",
       target_amount_estimate: profile.target_amount,
       primary_goal: profile.funding_goal_type,
       change_reason: version === 1 ? "initial_setup" : "readiness_review",
@@ -117,14 +119,18 @@ export async function runReadinessAndRoadmap(
         description: p.description,
         action_url: p.action_url,
         dependency_sequence: p.dependency_sequence,
-        status: carried.get(p.title) ?? "pending",
+        status: (p.readiness_gap ? undefined : carried.get(p.title)) ?? "pending",
         affiliate_relationship: false,
       })),
     );
     if (ins.error) throw new Error(`Could not save roadmap steps: ${ins.error.message}`);
   }
 
-  // Supersede older active versions only after the new one is fully written.
+  // Publish the fully written version, then retire older ones. The DAL reads
+  // the highest active version, so there is never a moment with no roadmap.
+  const pub = await supabase.from("funding_strategies").update({ status: "active" }).eq("id", strat.data.id);
+  if (pub.error) throw new Error(`Could not publish roadmap: ${pub.error.message}`);
+
   const sup = await supabase
     .from("funding_strategies")
     .update({ status: "superseded" })

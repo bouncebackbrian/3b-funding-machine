@@ -24,6 +24,20 @@ describe("buildRoadmap", () => {
     expect(plan.some((p) => p.title === "Get a written equipment quote")).toBe(true);
   });
 
+  it("flags exactly the currently-failing readiness fixes as gaps, so their old 'complete' never carries over", () => {
+    const empty = emptyState();
+    const r = evaluateReadiness(empty, LIVE_RULES, NOW);
+    const plan = buildRoadmap(empty, r);
+    const gaps = plan.filter((p) => p.readiness_gap);
+    expect(gaps.length).toBeGreaterThan(0);
+    // Gaps come first and stop at the first prep step.
+    expect(plan.slice(0, gaps.length).every((p) => p.readiness_gap)).toBe(true);
+    expect(plan.slice(gaps.length).some((p) => p.readiness_gap)).toBe(false);
+
+    const full = completeState();
+    expect(buildRoadmap(full, evaluateReadiness(full, LIVE_RULES, NOW)).some((p) => p.readiness_gap)).toBe(false);
+  });
+
   it("final funding review always depends on the document-package step", () => {
     const s = completeState();
     const plan = buildRoadmap(s, evaluateReadiness(s, LIVE_RULES, NOW));

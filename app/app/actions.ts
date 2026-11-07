@@ -433,6 +433,20 @@ export async function markDocumentNotApplicable(fd: FormData) {
   revalidatePath("/app", "layout");
 }
 
+/** Undo "doesn't apply" — the document goes back on the checklist as missing. */
+export async function restoreDocumentApplicability(fd: FormData) {
+  const { supabase, business } = await requireActiveBusiness();
+  const req = DOCUMENT_REQUIREMENTS.find((r) => r.documentType === str(fd, "document_type"));
+  if (!req) return;
+  await supabase
+    .from("funding_documents")
+    .update({ requirement_classification: req.classification })
+    .eq("business_id", business.id)
+    .eq("document_type", req.documentType)
+    .eq("requirement_classification", "not_applicable");
+  revalidatePath("/app", "layout");
+}
+
 // ── Review: score readiness + build roadmap ─────────────────────────────────
 export async function runReview(): Promise<ActionState> {
   const { user, supabase, business } = await requireActiveBusiness();
