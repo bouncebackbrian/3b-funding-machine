@@ -1,4 +1,4 @@
-import WaitlistForm from "./components/WaitlistForm";
+import Link from "next/link";
 
 const fundingTypes = [
   {
@@ -74,12 +74,17 @@ export default function FundingMachinePage() {
               Funding · Emerald & Gold
             </span>
           </div>
-          <a
-            href="https://bouncebackbrian.com"
-            style={{ fontSize: "13px", color: "var(--text-dim)", textDecoration: "none" }}
-          >
-            ← 3B Nexus
-          </a>
+          <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+            <a
+              href="https://bouncebackbrian.com"
+              style={{ fontSize: "13px", color: "var(--text-dim)", textDecoration: "none" }}
+            >
+              ← 3B Nexus
+            </a>
+            <Link href="/login" style={{ fontSize: "14px", color: "#00E676", textDecoration: "none", fontWeight: 600 }}>
+              Sign in
+            </Link>
+          </div>
         </div>
       </nav>
 
@@ -102,7 +107,7 @@ export default function FundingMachinePage() {
               boxShadow: "0 0 8px #00E676", display: "inline-block",
             }} />
             <span style={{ fontSize: "12px", fontWeight: 700, color: "#00E676", letterSpacing: "0.1em", textTransform: "uppercase" }}>
-              3B Funding Machine · Coming Soon
+              3B Funding Machine · Now Open
             </span>
           </div>
 
@@ -116,7 +121,7 @@ export default function FundingMachinePage() {
             the capital your business deserves.
           </p>
           <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
-            <a href="#apply" className="btn-primary">Find My Funding →</a>
+            <Link href="/signup" className="btn-primary">Start My Funding Setup →</Link>
             <a href="#how-it-works" className="btn-outline">How It Works</a>
           </div>
 
@@ -250,16 +255,19 @@ export default function FundingMachinePage() {
               💰
             </div>
             <p style={{ fontSize: "11px", fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "#00E676", marginBottom: "16px" }}>
-              Get Early Access
+              Start Free
             </p>
             <h2 style={{ fontSize: "clamp(1.75rem, 4vw, 2.5rem)", fontWeight: 900, marginBottom: "16px", color: "#F5F7FA" }}>
-              Be First in Line
+              Start Your Funding Setup
             </h2>
             <p style={{ fontSize: "16px", color: "var(--text-muted)", marginBottom: "40px", lineHeight: 1.7 }}>
-              3B Funding Machine is launching soon. Join the waitlist and get early access,
-              exclusive funding match previews, and first dibs on our founding member rate.
+              Build your funding profile in about 10 minutes. Get your readiness score and a
+              step-by-step roadmap to funding — saved to your 3B account so you can pick up anytime.
             </p>
-            <WaitlistForm />
+            <Link href="/signup" className="btn-primary">Create My Free Account →</Link>
+            <p style={{ fontSize: "13px", color: "var(--text-dim)", marginTop: "16px" }}>
+              Already have a 3B account? <Link href="/login" style={{ color: "#00E676" }}>Sign in</Link>
+            </p>
           </div>
         </div>
       </section>
