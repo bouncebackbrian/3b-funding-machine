@@ -1,5 +1,6 @@
 import { checkAlignment, emailDomain, FREE_EMAIL_DOMAINS, isIdentityAligned } from "./alignment";
 import { allDisclosuresAccepted } from "./disclosures";
+import { attestationsOf, presenceOutcome, type PresenceKey } from "./presence";
 import { isProvided } from "./documents";
 import type { FundingState, ReadinessRule } from "./types";
 
@@ -34,6 +35,7 @@ export interface ReadinessResult {
 export type SetupStepKey =
   | "business"
   | "contact"
+  | "presence"
   | "owners"
   | "banking"
   | "goal"
@@ -43,6 +45,13 @@ export type SetupStepKey =
 const REVENUE_FRESH_DAYS = 120;
 
 type Evaluator = (s: FundingState, now: Date) => RuleOutcome;
+
+/** Unanswered counts as a gap (fail); before the column exists the rule can't be checked (unverified). */
+function attested(s: FundingState, key: PresenceKey): RuleOutcome {
+  const a = attestationsOf(s);
+  if (a === undefined) return "unverified";
+  return presenceOutcome(a, key) === "pass" ? "pass" : "fail";
+}
 
 const present = (v: string | null | undefined) => (v != null && v.trim().length > 0 ? "pass" : "fail");
 
@@ -109,6 +118,13 @@ const EVALUATORS: Record<string, { fn: Evaluator; fix: SetupStepKey | null }> = 
   },
   identity_aligned: { fn: (s) => (isIdentityAligned(checkAlignment(s.business)) ? "pass" : "fail"), fix: "contact" },
   duns_on_file: { fn: (s) => present(s.business.duns_number), fix: "business" },
+  // Lender-ready presence (self-attested; migration 20261112b_lender_ready_presence.sql).
+  business_phone_dedicated: { fn: (s) => attested(s, "phone_line_type"), fix: "presence" },
+  listed_411: { fn: (s) => attested(s, "listed_411"), fix: "presence" },
+  google_business_profile: { fn: (s) => attested(s, "google_business_profile"), fix: "presence" },
+  bank_account_legal_name: { fn: (s) => attested(s, "bank_account_legal_name"), fix: "presence" },
+  state_good_standing: { fn: (s) => attested(s, "state_good_standing"), fix: "presence" },
+  licenses_current: { fn: (s) => attested(s, "licenses_current"), fix: "presence" },
   // Not integrated yet — personal credit pull and application-velocity tracking
   // are future modules. Excluded from the score rather than assumed.
   credit_qualification_tracked: { fn: () => "not_applicable", fix: null },

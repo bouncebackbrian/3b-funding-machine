@@ -1,5 +1,6 @@
 import { ActionForm, Field, SubmitButton } from "@/components/form";
 import { MediaGroupCta } from "@/components/media-group-cta";
+import { OfferList } from "@/components/offer-list";
 import { StepHeader } from "@/components/step-header";
 import { checkAlignment } from "@/lib/funding/alignment";
 import { domainHint, mediaNeeds } from "@/lib/funding/media-group";
@@ -23,12 +24,36 @@ export default async function ContactStep() {
           <Field name="zip_code" label="ZIP" inputMode="numeric" defaultValue={b.zip_code} autoComplete="postal-code" required />
         </div>
         <div className="fm-grid-2">
-          <Field name="business_phone" label="Business phone" type="tel" inputMode="tel" defaultValue={b.business_phone} required />
-          <Field name="business_email" label="Business email" type="email" defaultValue={b.business_email} required />
+          <Field
+            name="business_phone"
+            label="Business phone"
+            type="tel"
+            inputMode="tel"
+            defaultValue={b.business_phone}
+            required
+            hint="A dedicated business line, not your personal cell. You'll confirm the line type next."
+          />
+          <Field
+            name="business_email"
+            label="Business email"
+            type="email"
+            defaultValue={b.business_email}
+            required
+            hint="On your own domain, like you@yourbusiness.com. Gmail, Yahoo and similar won't count as bankable."
+          />
         </div>
         <Field name="website_url" label="Website" type="url" placeholder="https://" defaultValue={b.website_url} hint="Optional, but it helps legitimacy checks." />
         <SubmitButton>Save and continue</SubmitButton>
       </ActionForm>
+      {(() => {
+        const email = checkAlignment(b).find((c) => c.key === "email_on_domain")?.status;
+        return email === "warning" ? (
+          <div className="fm-card">
+            <p className="fm-alert fm-alert-error">Your email is on a personal provider. Lenders expect an email on your business&apos;s own domain.</p>
+            <OfferList gap="business_email" />
+          </div>
+        ) : null;
+      })()}
       {/* Only when there's a web gap to fix here; the logo-only offer lives on the dashboard. */}
       {mediaNeeds(checkAlignment(b)).some((n) => n !== "logo") && <MediaGroupCta needs={mediaNeeds(checkAlignment(b))} domain={domainHint(b)} />}
     </>

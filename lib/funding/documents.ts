@@ -54,6 +54,20 @@ export const DOCUMENT_REQUIREMENTS: DocumentRequirement[] = [
     classification: "conditionally_required",
   },
   {
+    documentType: "personal_tax_returns",
+    category: "tax",
+    label: "Owner personal tax returns",
+    help: "Most recent 2–3 years for each owner with 20%+ ownership. Banks and SBA lenders ask for these because owners guarantee the loan.",
+    classification: "conditionally_required",
+  },
+  {
+    documentType: "business_license",
+    category: "entity_formation",
+    label: "Business licenses and permits",
+    help: "City/county business license and any industry permits (for trucking: USDOT/MC authority).",
+    classification: "optional",
+  },
+  {
     documentType: "equipment_quote",
     category: "equipment",
     label: "Equipment quote or spec sheet",
