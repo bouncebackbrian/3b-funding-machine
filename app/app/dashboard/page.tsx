@@ -1,5 +1,9 @@
 import Link from "next/link";
+import { AlignmentGrid } from "@/components/alignment-grid";
+import { MediaGroupCta } from "@/components/media-group-cta";
 import { ScoreBadge } from "@/components/readiness-view";
+import { checkAlignment } from "@/lib/funding/alignment";
+import { domainHint, mediaNeeds } from "@/lib/funding/media-group";
 import { requireFundingContext } from "@/lib/dal";
 import type { ReadinessStatus } from "@/lib/funding/readiness";
 import { sequenceProgress } from "@/lib/funding/sequence";
@@ -11,6 +15,7 @@ const money = (n: number | null | undefined) =>
 export default async function Dashboard() {
   const { business, state } = await requireFundingContext();
   const progress = sequenceProgress(state);
+  const alignment = checkAlignment(business);
   const goal = FUNDING_GOAL_TYPES.find((g) => g.value === state.profile?.funding_goal_type)?.label;
   const nextRoadmapStep = state.steps.find((s) => s.status === "pending" || s.status === "in_progress");
   const roadmapDone = state.steps.filter((s) => s.status === "complete" || s.status === "skipped").length;
@@ -71,6 +76,9 @@ export default async function Dashboard() {
           <p className="fm-muted fm-small">Last scored {new Date(state.readiness.computed_at).toLocaleDateString()}.</p>
         </section>
       )}
+
+      <AlignmentGrid checks={alignment} />
+      <MediaGroupCta needs={mediaNeeds(alignment)} domain={domainHint(business)} />
 
       <div className="fm-grid-2">
         <section className="fm-card">

@@ -130,6 +130,22 @@ export async function saveBusiness(_prev: ActionState, fd: FormData): Promise<Ac
   goNext("business");
 }
 
+// ── D-U-N-S (part of the business foundation; separate form so it can't block step 1) ──
+const DUNS_STATUSES = ["not_applied", "requested", "assigned"] as const;
+
+export async function saveDuns(_prev: ActionState, fd: FormData): Promise<ActionState> {
+  const { supabase, business } = await requireActiveBusiness();
+  const raw = str(fd, "duns_number");
+  const digits = raw?.replace(/\D/g, "") ?? null;
+  if (raw && digits!.length !== 9) return fail("A D-U-N-S number is 9 digits.", { duns_number: "Enter all 9 digits." });
+
+  const status = digits ? "assigned" : (oneOf(str(fd, "duns_status"), DUNS_STATUSES) ?? "not_applied");
+  const upd = await supabase.from("businesses").update({ duns_number: digits, duns_status: status }).eq("id", business.id);
+  if (upd.error) return fail(`Could not save your D-U-N-S details: ${upd.error.message}`);
+  revalidatePath("/app", "layout");
+  return { ok: true, message: digits ? "D-U-N-S number saved." : "Saved. Add your number here once D&B assigns it." };
+}
+
 /** Switch the active business (any business the user already belongs to across 3B). */
 export async function switchBusiness(fd: FormData) {
   const id = str(fd, "business_id");
