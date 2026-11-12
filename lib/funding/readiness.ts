@@ -1,3 +1,4 @@
+import { checkAlignment, emailDomain, FREE_EMAIL_DOMAINS, isIdentityAligned } from "./alignment";
 import { allDisclosuresAccepted } from "./disclosures";
 import { isProvided } from "./documents";
 import type { FundingState, ReadinessRule } from "./types";
@@ -97,6 +98,17 @@ const EVALUATORS: Record<string, { fn: Evaluator; fix: SetupStepKey | null }> = 
     fn: (s) => (allDisclosuresAccepted(s.consents) ? "pass" : "fail"),
     fix: "disclosures",
   },
+  // Bankability foundation (2026-11-12). Rows are added by migration
+  // 20261112_bankability_foundation.sql; until then these keys are simply not evaluated.
+  business_email_on_domain: {
+    fn: (s) => {
+      const d = emailDomain(s.business.business_email);
+      return d && !FREE_EMAIL_DOMAINS.has(d) ? "pass" : "fail";
+    },
+    fix: "contact",
+  },
+  identity_aligned: { fn: (s) => (isIdentityAligned(checkAlignment(s.business)) ? "pass" : "fail"), fix: "contact" },
+  duns_on_file: { fn: (s) => present(s.business.duns_number), fix: "business" },
   // Not integrated yet — personal credit pull and application-velocity tracking
   // are future modules. Excluded from the score rather than assumed.
   credit_qualification_tracked: { fn: () => "not_applicable", fix: null },

@@ -32,6 +32,9 @@ const GAP_PLAYBOOK: Record<string, { category: PlannedStep["category"]; title: s
   guarantor_documented: { category: "foundation", title: "Add owner / guarantor details", how: "List every owner and their ownership percentage.", url: "/app/setup/owners" },
   funding_purpose_documented: { category: "application_prep", title: "Document your funding purpose", how: "A clear, specific business use of funds.", url: "/app/setup/goal" },
   compliance_certifications_accepted: { category: "compliance", title: "Accept the required certifications", how: "Required before 3B prepares anything for a lender.", url: "/app/setup/disclosures" },
+  business_email_on_domain: { category: "foundation", title: "Move to an email on your own domain", how: "Set up you@yourbusiness.com on the same domain as your website — lenders and vendors read a personal inbox as a newer, riskier business.", url: "/app/setup/contact" },
+  identity_aligned: { category: "foundation", title: "Fix mismatches in your business identity", how: "Your name, email domain, website, and phone should match exactly everywhere. Your dashboard shows each mismatch and how to fix it.", url: "/app/dashboard" },
+  duns_on_file: { category: "credit", title: "Get a D-U-N-S number for your business", how: "Free from Dun & Bradstreet — it opens your business credit file. Register with the exact legal name, address, and phone in your profile, then add the number to your business step.", url: "https://www.dnb.com/duns/get-a-duns.html" },
   entity_documents_complete: { category: "documentation", title: "Upload formation and EIN documents", how: "Articles of Organization/Incorporation and your IRS EIN letter.", url: "/app/setup/documents" },
 };
 
@@ -85,13 +88,19 @@ export function buildRoadmap(state: FundingState, readiness: ReadinessResult): P
     });
   }
 
-  steps.push(
-    {
+  // D-U-N-S: once the duns_on_file rule is live it arrives as a gap fix above.
+  // Until then (or if it's turned off), keep the standing step unless a number is already on file.
+  const dunsRuleScored = readiness.rule_results.some((r) => r.rule_key === "duns_on_file");
+  if (!dunsRuleScored && !state.business.duns_number?.trim()) {
+    steps.push({
       category: "credit",
       title: "Get a D-U-N-S number for your business",
       description: "A free D-U-N-S number from Dun & Bradstreet opens your business credit file, which many lenders and vendors check.",
       action_url: "https://www.dnb.com/duns/get-a-duns.html",
-    },
+    });
+  }
+
+  steps.push(
     {
       category: "credit",
       title: "Review your personal credit reports",

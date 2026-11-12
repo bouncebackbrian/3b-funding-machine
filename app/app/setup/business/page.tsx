@@ -3,7 +3,7 @@ import { ActionForm, Field, Select, SubmitButton } from "@/components/form";
 import { StepHeader } from "@/components/step-header";
 import { getActiveBusiness, getUserBusinesses } from "@/lib/dal";
 import { ENTITY_TYPES } from "@/lib/funding/types";
-import { saveBusiness, switchBusiness } from "../../actions";
+import { saveBusiness, saveDuns, switchBusiness } from "../../actions";
 
 const INDUSTRY = [
   { value: "owner_op", label: "Trucking — owner-operator" },
@@ -86,6 +86,38 @@ export default async function BusinessStep({ searchParams }: { searchParams: Pro
         )}
         <SubmitButton>Save and continue</SubmitButton>
       </ActionForm>
+
+      {/* Shown once the D-U-N-S columns exist (migration 20261112_bankability_foundation). */}
+      {b && "duns_number" in b && (
+        <section className="fm-card" aria-labelledby="duns-heading">
+          <h2 id="duns-heading" className="fm-h3">
+            D-U-N-S number
+          </h2>
+          <p className="fm-muted fm-small">
+            A free D-U-N-S number from Dun &amp; Bradstreet opens your business credit file. Register with the exact legal name, address and phone in
+            your profile.{" "}
+            <a href="https://www.dnb.com/duns/get-a-duns.html" target="_blank" rel="noopener noreferrer">
+              Get one free ↗
+            </a>{" "}
+            Paid &ldquo;expedite&rdquo; options are optional.
+          </p>
+          <ActionForm action={saveDuns}>
+            <Field name="duns_number" label="D-U-N-S number" placeholder="123456789" inputMode="numeric" maxLength={11} defaultValue={b.duns_number} />
+            {!b.duns_number && (
+              <Select
+                name="duns_status"
+                label="If you don't have one yet"
+                defaultValue={b.duns_status === "requested" ? "requested" : "not_applied"}
+                options={[
+                  { value: "not_applied", label: "Haven't requested" },
+                  { value: "requested", label: "Requested, waiting on D&B" },
+                ]}
+              />
+            )}
+            <SubmitButton>Save D-U-N-S</SubmitButton>
+          </ActionForm>
+        </section>
+      )}
     </>
   );
 }

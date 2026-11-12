@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { AlignmentGrid } from "@/components/alignment-grid";
 import { ScoreBadge } from "@/components/readiness-view";
+import { checkAlignment } from "@/lib/funding/alignment";
 import { requireFundingContext } from "@/lib/dal";
 import type { ReadinessStatus } from "@/lib/funding/readiness";
 import { sequenceProgress } from "@/lib/funding/sequence";
@@ -71,6 +73,8 @@ export default async function Dashboard() {
           <p className="fm-muted fm-small">Last scored {new Date(state.readiness.computed_at).toLocaleDateString()}.</p>
         </section>
       )}
+
+      <AlignmentGrid checks={checkAlignment(business)} />
 
       <div className="fm-grid-2">
         <section className="fm-card">

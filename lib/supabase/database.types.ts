@@ -1378,6 +1378,8 @@ export type Database = {
           domain: string | null
           domain_status: string
           dot_number: string | null
+          duns_number: string | null
+          duns_status: string
           ein: string | null
           ein_status: string
           entity_type: string | null
@@ -1413,6 +1415,8 @@ export type Database = {
           domain?: string | null
           domain_status?: string
           dot_number?: string | null
+          duns_number?: string | null
+          duns_status?: string
           ein?: string | null
           ein_status?: string
           entity_type?: string | null
@@ -1448,6 +1452,8 @@ export type Database = {
           domain?: string | null
           domain_status?: string
           dot_number?: string | null
+          duns_number?: string | null
+          duns_status?: string
           ein?: string | null
           ein_status?: string
           entity_type?: string | null
