@@ -14,6 +14,7 @@ import {
 import { DISCLOSURES } from "@/lib/funding/disclosures";
 import { ALLOWED_UPLOAD_TYPES, DOCUMENT_REQUIREMENTS, MAX_UPLOAD_BYTES } from "@/lib/funding/documents";
 import { getOrCreateFundingProfile, runReadinessAndRoadmap } from "@/lib/funding/persist";
+import { PRESENCE_ITEMS } from "@/lib/funding/presence";
 import { nextStepKey } from "@/lib/funding/sequence";
 import {
   BANK_ACCOUNT_STATUSES,
@@ -189,7 +190,32 @@ export async function saveContact(_prev: ActionState, fd: FormData): Promise<Act
   goNext("contact");
 }
 
-// ── Step 3: owners ──────────────────────────────────────────────────────────
+// ── Step 3: lender-ready presence (self-attested) ───────────────────────────
+export async function savePresence(_prev: ActionState, fd: FormData): Promise<ActionState> {
+  const { user, supabase, business } = await requireActiveBusiness();
+  const profile = await getOrCreateFundingProfile(supabase, business.id, user.id);
+  if (!("bankability_attestations" in profile)) {
+    return fail("This checklist isn't switched on yet. Please check back shortly.");
+  }
+
+  const prev = (profile.bankability_attestations ?? {}) as Record<string, { value: string; at: string }>;
+  const now = new Date().toISOString();
+  const next: Record<string, { value: string; at: string }> = { ...prev };
+  const fieldErrors: Record<string, string> = {};
+  for (const item of PRESENCE_ITEMS) {
+    const v = oneOf(str(fd, item.key), item.options.map((o) => o.value));
+    if (!v) fieldErrors[item.key] = "Choose one.";
+    // Keep the original timestamp when the answer didn't change.
+    else next[item.key] = prev[item.key]?.value === v ? prev[item.key] : { value: v, at: now };
+  }
+  if (Object.keys(fieldErrors).length) return fail("Please answer every question — “Not sure” is fine.", fieldErrors);
+
+  const upd = await supabase.from("funding_profiles").update({ bankability_attestations: next }).eq("id", profile.id);
+  if (upd.error) return fail(`Could not save: ${upd.error.message}`);
+  goNext("presence");
+}
+
+// ── Step 4: owners ──────────────────────────────────────────────────────────
 export async function addOwner(_prev: ActionState, fd: FormData): Promise<ActionState> {
   const { user, supabase, business } = await requireActiveBusiness();
   const fullName = str(fd, "full_name");
@@ -236,7 +262,7 @@ export async function continueFromOwners() {
   goNext("owners");
 }
 
-// ── Step 4: banking & revenue ───────────────────────────────────────────────
+// ── Step 5: banking & revenue ───────────────────────────────────────────────
 export async function saveBanking(_prev: ActionState, fd: FormData): Promise<ActionState> {
   const { user, supabase, business } = await requireActiveBusiness();
   const bankStatus = oneOf(str(fd, "bank_account_status"), BANK_ACCOUNT_STATUSES.map((b) => b.value));
@@ -276,7 +302,7 @@ export async function saveBanking(_prev: ActionState, fd: FormData): Promise<Act
   goNext("banking");
 }
 
-// ── Step 5: funding goal ────────────────────────────────────────────────────
+// ── Step 6: funding goal ────────────────────────────────────────────────────
 export async function saveGoal(_prev: ActionState, fd: FormData): Promise<ActionState> {
   const { user, supabase, business } = await requireActiveBusiness();
   const goal = oneOf(str(fd, "funding_goal_type"), FUNDING_GOAL_TYPES.map((g) => g.value));
@@ -345,7 +371,7 @@ export async function saveGoal(_prev: ActionState, fd: FormData): Promise<Action
   goNext("goal");
 }
 
-// ── Step 6: disclosures ─────────────────────────────────────────────────────
+// ── Step 7: disclosures ─────────────────────────────────────────────────────
 export async function acceptDisclosures(_prev: ActionState, fd: FormData): Promise<ActionState> {
   const { user, supabase, business } = await requireActiveBusiness();
   const missing = DISCLOSURES.filter((d) => fd.get(`accept_${d.type}`) !== "on");
@@ -366,7 +392,7 @@ export async function acceptDisclosures(_prev: ActionState, fd: FormData): Promi
   goNext("disclosures");
 }
 
-// ── Step 7: documents ───────────────────────────────────────────────────────
+// ── Step 8: documents ───────────────────────────────────────────────────────
 /**
  * Records a document the browser already uploaded to Storage. Never trusts the
  * client: the path must sit in this business's own folder for this document

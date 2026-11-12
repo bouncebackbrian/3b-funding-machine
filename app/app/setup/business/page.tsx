@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ActionForm, Field, Select, SubmitButton } from "@/components/form";
+import { OfferList } from "@/components/offer-list";
 import { StepHeader } from "@/components/step-header";
 import { getActiveBusiness, getUserBusinesses } from "@/lib/dal";
 import { ENTITY_TYPES } from "@/lib/funding/types";
@@ -116,6 +117,7 @@ export default async function BusinessStep({ searchParams }: { searchParams: Pro
             )}
             <SubmitButton>Save D-U-N-S</SubmitButton>
           </ActionForm>
+          <OfferList gap="business_credit" />
         </section>
       )}
     </>

@@ -1,6 +1,7 @@
 import { allDisclosuresAccepted } from "./disclosures";
 import { isProvided, requirementsForGoal } from "./documents";
 import type { SetupStepKey } from "./readiness";
+import { attestationsOf, presenceComplete } from "./presence";
 import type { FundingState } from "./types";
 
 export interface SetupStep {
@@ -18,6 +19,7 @@ export interface SetupStep {
 export const SETUP_STEPS: SetupStep[] = [
   { key: "business", title: "Business foundation", summary: "Legal name, entity, EIN", blocking: true },
   { key: "contact", title: "Contact & location", summary: "Address, phone, email, website", blocking: true },
+  { key: "presence", title: "Lender-ready presence", summary: "Business phone, 411, Google listing, good standing", blocking: false },
   { key: "owners", title: "Owners & guarantors", summary: "Who owns the business", blocking: true },
   { key: "banking", title: "Banking & revenue", summary: "Business bank account and current numbers", blocking: true },
   { key: "goal", title: "Funding goal", summary: "What you need, how much, and why", blocking: true },
@@ -36,6 +38,10 @@ export function stepStatus(key: SetupStepKey, s: FundingState): StepStatus {
       const fields = [b.address_line1, b.city, b.state, b.zip_code, b.business_phone, b.business_email];
       const filled = fields.filter((v) => v && v.trim()).length;
       return filled === fields.length ? "complete" : filled > 0 ? "in_progress" : "not_started";
+    }
+    case "presence": {
+      const a = attestationsOf(s);
+      return presenceComplete(a) ? "complete" : a && Object.keys(a).length ? "in_progress" : "not_started";
     }
     case "owners":
       return s.owners.length > 0 ? "complete" : "not_started";

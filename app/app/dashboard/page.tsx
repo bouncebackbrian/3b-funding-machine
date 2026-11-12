@@ -73,7 +73,10 @@ export default async function Dashboard() {
         <section className="fm-card">
           <h2 className="fm-h3">Funding readiness</h2>
           <ScoreBadge score={Number(state.readiness.overall_score)} status={state.readiness.status as ReadinessStatus} />
-          <p className="fm-muted fm-small">Last scored {new Date(state.readiness.computed_at).toLocaleDateString()}.</p>
+          <p className="fm-muted fm-small">
+            Last scored {new Date(state.readiness.computed_at).toLocaleDateString()}. Fixed something since?{" "}
+            <Link href="/app/setup/review">Update your score</Link>
+          </p>
         </section>
       )}
 

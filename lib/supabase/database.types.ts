@@ -6294,6 +6294,7 @@ export type Database = {
       }
       funding_profiles: {
         Row: {
+          bankability_attestations: Json
           business_id: string
           created_at: string
           created_by: string | null
@@ -6308,6 +6309,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          bankability_attestations?: Json
           business_id: string
           created_at?: string
           created_by?: string | null
@@ -6322,6 +6324,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          bankability_attestations?: Json
           business_id?: string
           created_at?: string
           created_by?: string | null
