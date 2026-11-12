@@ -82,10 +82,15 @@ export const PRESENCE_ITEMS = [
 export type PresenceKey = (typeof PRESENCE_ITEMS)[number]["key"];
 export type Attestations = Partial<Record<PresenceKey, { value: string; at: string }>>;
 
-/** Undefined when the column doesn't exist yet (migration not applied). */
+/**
+ * Undefined only when a profile row exists without the column (migration not
+ * applied). No profile yet = nothing answered ({}): the save action creates the
+ * profile, so businesses that skipped step 1 can still fill the checklist.
+ */
 export function attestationsOf(state: Pick<FundingState, "profile">): Attestations | undefined {
   const p = state.profile as (FundingState["profile"] & { bankability_attestations?: unknown }) | null;
-  if (!p || !("bankability_attestations" in p)) return undefined;
+  if (!p) return {};
+  if (!("bankability_attestations" in p)) return undefined;
   const raw = p.bankability_attestations;
   return raw && typeof raw === "object" && !Array.isArray(raw) ? (raw as Attestations) : {};
 }

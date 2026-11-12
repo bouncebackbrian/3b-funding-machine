@@ -64,6 +64,13 @@ describe("lender-ready presence", () => {
     expect(stepStatus("presence", s)).toBe("not_started");
   });
 
+  it("a business with no funding profile yet still gets the checklist (nothing answered)", () => {
+    const s = completeState();
+    s.profile = null;
+    expect(attestationsOf(s)).toEqual({});
+    expect(stepStatus("presence", s)).toBe("not_started");
+  });
+
   it("licenses: 'not required for my business' passes", () => {
     expect(presenceOutcome({ licenses_current: { value: "not_applicable", at: "" } }, "licenses_current")).toBe("pass");
     expect(presenceComplete({})).toBe(false);
