@@ -43,3 +43,19 @@ describe("3B Media Group hand-off", () => {
     expect(mediaNeeds(checkAlignment(biz))).toEqual(["logo"]);
   });
 });
+
+import { domainHint, serviceWhy } from "../media-group";
+
+describe("domain hint", () => {
+  it("uses the existing website domain", () => {
+    expect(domainHint({ legal_name: "Acme Hauling LLC", website_url: "https://www.acmehauling.com" })).toEqual({ domain: "acmehauling.com", existing: true });
+  });
+  it("builds an example from the legal name, dropping the entity suffix", () => {
+    expect(domainHint({ legal_name: "Acme Hauling LLC", website_url: null })).toEqual({ domain: "acmehauling.com", existing: false });
+    expect(domainHint({ legal_name: "B & B Trucking, Inc.", website_url: null })?.domain).toBe("bandbtrucking.com");
+  });
+  it("copy shows a matching email on that domain", () => {
+    expect(serviceWhy("email", "acmehauling.com")).toContain("you@acmehauling.com");
+    expect(serviceWhy("email", null)).toContain("you@yourbusiness.com");
+  });
+});

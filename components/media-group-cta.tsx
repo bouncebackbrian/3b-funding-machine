@@ -1,11 +1,11 @@
-import { mediaGroupBaseUrl, mediaGroupLink, MEDIA_SERVICE_COPY, type MediaService } from "@/lib/funding/media-group";
+import { mediaGroupBaseUrl, mediaGroupLink, MEDIA_SERVICE_COPY, serviceWhy, type MediaService } from "@/lib/funding/media-group";
 
 /**
  * "Need a website, domain or logo?" — links to 3B Media Group.
  * Renders nothing when THREEB_MEDIA_GROUP_URL isn't configured.
  * With only "logo" in needs it becomes a light logo offer.
  */
-export function MediaGroupCta({ needs }: { needs: MediaService[] }) {
+export function MediaGroupCta({ needs, domain = null }: { needs: MediaService[]; domain?: { domain: string; existing: boolean } | null }) {
   const base = mediaGroupBaseUrl();
   if (!base || needs.length === 0) return null;
   const webGap = needs.some((n) => n !== "logo");
@@ -19,10 +19,13 @@ export function MediaGroupCta({ needs }: { needs: MediaService[] }) {
       <ul className="fm-mini">
         {needs.map((n) => (
           <li key={n}>
-            <strong>{MEDIA_SERVICE_COPY[n].title}</strong> — <span className="fm-muted">{MEDIA_SERVICE_COPY[n].why}</span>
+            <strong>{MEDIA_SERVICE_COPY[n].title}</strong> — <span className="fm-muted">{serviceWhy(n, domain?.domain ?? null)}</span>
           </li>
         ))}
       </ul>
+      {needs.includes("domain") && domain && !domain.existing && (
+        <p className="fm-muted fm-small">{domain.domain} is just an example. 3B Media Group checks what&apos;s available and registers it in your business&apos;s name.</p>
+      )}
       <a href={mediaGroupLink(base, needs)} target="_blank" rel="noopener noreferrer" className="fm-btn fm-btn-primary">
         Talk to 3B Media Group ↗
       </a>

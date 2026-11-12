@@ -2,7 +2,7 @@ import { ActionForm, Field, SubmitButton } from "@/components/form";
 import { MediaGroupCta } from "@/components/media-group-cta";
 import { StepHeader } from "@/components/step-header";
 import { checkAlignment } from "@/lib/funding/alignment";
-import { mediaNeeds } from "@/lib/funding/media-group";
+import { domainHint, mediaNeeds } from "@/lib/funding/media-group";
 import { requireFundingContext } from "@/lib/dal";
 import { saveContact } from "../../actions";
 
@@ -30,7 +30,7 @@ export default async function ContactStep() {
         <SubmitButton>Save and continue</SubmitButton>
       </ActionForm>
       {/* Only when there's a web gap to fix here; the logo-only offer lives on the dashboard. */}
-      {mediaNeeds(checkAlignment(b)).some((n) => n !== "logo") && <MediaGroupCta needs={mediaNeeds(checkAlignment(b))} />}
+      {mediaNeeds(checkAlignment(b)).some((n) => n !== "logo") && <MediaGroupCta needs={mediaNeeds(checkAlignment(b))} domain={domainHint(b)} />}
     </>
   );
 }

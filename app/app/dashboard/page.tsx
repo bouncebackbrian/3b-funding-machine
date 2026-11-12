@@ -3,7 +3,7 @@ import { AlignmentGrid } from "@/components/alignment-grid";
 import { MediaGroupCta } from "@/components/media-group-cta";
 import { ScoreBadge } from "@/components/readiness-view";
 import { checkAlignment } from "@/lib/funding/alignment";
-import { mediaNeeds } from "@/lib/funding/media-group";
+import { domainHint, mediaNeeds } from "@/lib/funding/media-group";
 import { requireFundingContext } from "@/lib/dal";
 import type { ReadinessStatus } from "@/lib/funding/readiness";
 import { sequenceProgress } from "@/lib/funding/sequence";
@@ -78,7 +78,7 @@ export default async function Dashboard() {
       )}
 
       <AlignmentGrid checks={alignment} />
-      <MediaGroupCta needs={mediaNeeds(alignment)} />
+      <MediaGroupCta needs={mediaNeeds(alignment)} domain={domainHint(business)} />
 
       <div className="fm-grid-2">
         <section className="fm-card">
