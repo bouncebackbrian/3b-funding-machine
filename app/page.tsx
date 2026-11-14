@@ -122,6 +122,7 @@ export default function FundingMachinePage() {
           </p>
           <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
             <Link href="/signup" className="btn-primary">Start My Funding Setup →</Link>
+            <Link href="/llc-funding" className="btn-outline">LLC Funding Mode</Link>
             <a href="#how-it-works" className="btn-outline">How It Works</a>
           </div>
 
