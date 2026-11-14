@@ -23,6 +23,8 @@ export const BUSINESS_CREDIT_EXAMPLES = [
   },
 ];
 
+export const PUBLIC_LISTING_GUIDANCE = "For eligible businesses, claim or verify Google Business Profile. Use a service area and hide the street address on Google if customers aren’t served at that address. Check 411 availability with the phone provider. Compare public details with the Company page and record intentional differences in the private packet.";
+
 export const BUSINESS_CREDIT_GUIDANCE = "Choose accounts for purchases the business already needs and can pay on time. Ask the provider in writing whether it reports positive payment history, to which business bureaus, and how often. Keep invoices and payment records and check the business report before marking a trade line as reporting.";
 
 const money = (value: number | null | undefined) =>
@@ -121,6 +123,7 @@ export function renderPacketSummary(packet: BankablePacket, evidence: string[] =
     "", "DOCUMENT CHECKLIST", ...packet.documents.map(({ label, status, classification }) => `- ${label} — ${status} (${classification})`),
     ...(evidence.length ? ["", "ATTACHMENTS", ...evidence] : []),
     "", "CONFIRM WITH YOUR LENDER", ...packet.lenderChecklist.map((item) => `- ${item}`),
+    "", "PUBLIC BUSINESS LISTINGS", PUBLIC_LISTING_GUIDANCE,
     "", "BUSINESS PAYMENT HISTORY", BUSINESS_CREDIT_GUIDANCE,
     ...BUSINESS_CREDIT_EXAMPLES.map(({ name, use, url }) => `- ${name} — ${use} ${url}`),
     "",

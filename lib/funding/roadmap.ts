@@ -130,6 +130,13 @@ export function buildRoadmap(state: FundingState, readiness: ReadinessResult): P
     },
   );
 
+  steps.push({
+    category: "foundation",
+    title: "Check Google and 411 business listings",
+    description: "For an eligible business, claim or verify its Google Business Profile. Ask the phone provider whether it offers a 411 listing. Match the public name, phone, website, and storefront address or service area to the Company page.",
+    action_url: "/app/packet#public-listings",
+  });
+
   const goal = state.profile?.funding_goal_type ?? "other";
   steps.push(...(GOAL_STEPS[goal] ?? GOAL_STEPS.other));
 
