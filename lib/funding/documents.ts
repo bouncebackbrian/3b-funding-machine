@@ -35,8 +35,8 @@ export const DOCUMENT_REQUIREMENTS: DocumentRequirement[] = [
   {
     documentType: "bank_statements_3mo",
     category: "banking",
-    label: "Last 3 months of business bank statements",
-    help: "Full statements (all pages) from your business checking account.",
+    label: "Current business bank statements",
+    help: "Upload full statements for the latest three closed months. Confirm the exact period with your lender and include every page.",
     classification: "required",
   },
   {
@@ -92,10 +92,9 @@ export const DOCUMENT_REQUIREMENTS: DocumentRequirement[] = [
   {
     documentType: "business_plan",
     category: "projections",
-    label: "Business plan or projections",
-    help: "Especially important for startups and businesses under 2 years old.",
+    label: "Current business plan",
+    help: "Describe the company, customers, owners, operations, funding request, use of funds, and expected repayment. Date the plan and label projections with their assumptions.",
     classification: "conditionally_required",
-    goals: ["startup"],
   },
 ];
 
