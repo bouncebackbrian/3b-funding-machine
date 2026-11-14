@@ -74,7 +74,11 @@ it("matches an equipment request without changing the client's target based on t
     const packet = buildPacket(state, { ...readiness, overall_score: score }, new Date("2026-11-14T12:00:00Z"));
     expect(packet.goalFit).toMatchObject({ type: "Equipment loan or lease", amount: 50000, score });
     const summary = renderPacketSummary(packet);
+    expect(summary).toContain("Review the full request");
+    expect(summary).toContain("Consider a smaller phase if useful");
+    expect(summary).toContain("Review existing business assets");
     expect(summary).toContain("smallest usable equipment purchase");
+    expect(summary).toContain("Current business credit report");
     expect(summary).toContain("Reassess the original goal");
     expect(summary).toContain("Original requested amount: $50,000");
   }

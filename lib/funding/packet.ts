@@ -1,4 +1,4 @@
-import { matchFundingGoal } from "./goal-fit";
+import { CREDIT_REVIEW, matchFundingGoal } from "./goal-fit";
 import { CAPITAL_PREP, truckingPreparation } from "./capital-prep";
 import { isProvided, requirementsForFunding } from "./documents";
 import type { ReadinessResult } from "./readiness";
@@ -58,6 +58,7 @@ export function buildPacket(state: FundingState, readiness: ReadinessResult, now
           : "Missing";
     const extension = path?.match(/\.(pdf|jpe?g|png|heic|heif|webp)$/i)?.[0]?.toLowerCase() ?? "";
     return {
+      documentType: requirement.documentType,
       label: requirement.label,
       help: requirement.help,
       classification: requirement.classification.replaceAll("_", " "),
@@ -91,7 +92,7 @@ export function buildPacket(state: FundingState, readiness: ReadinessResult, now
         ? [["Equipment", [equipment.equipment_year, equipment.equipment_subtype].filter(Boolean).join(" ")], ["Estimated equipment price", money(equipment.estimated_purchase_price)]]
         : []),
     ],
-    goalFit: matchFundingGoal(profile, readiness),
+    goalFit: matchFundingGoal(state, readiness, documents.find((doc) => doc.documentType === "business_credit_report")?.status ?? "Missing"),
     finances: [
       ["Figures as of", snapshot?.as_of_date ?? "Not provided"],
       ["Monthly business revenue", money(snapshot?.monthly_revenue)],
@@ -136,7 +137,9 @@ export function renderPacketSummary(packet: BankablePacket, evidence: string[] =
       `3B readiness score: ${packet.goalFit.score}/100`,
       packet.goalFit.readinessAction,
       packet.goalFit.evidence,
-      ...packet.goalFit.stages.map(({ title, detail }) => `- ${title}: ${detail}`),
+      CREDIT_REVIEW,
+      ...packet.goalFit.review.map(([label, value]) => `${label}: ${value}`),
+      ...packet.goalFit.paths.map(({ title, detail }) => `- ${title}: ${detail}`),
       "The score measures preparation. Verify a no-personal-guarantee offer and confirm affordable payments before estimating a financeable amount.",
     ] : []),
     "", "CLIENT-REPORTED FINANCIALS", ...packet.finances.map(([label, value]) => `${label}: ${value}`),

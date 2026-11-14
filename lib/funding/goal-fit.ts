@@ -21,7 +21,10 @@ const firstExpenses: Record<FundingGoalType, string> = {
   other: "Itemize the original goal and identify its smallest useful, separately priced phase.",
 };
 
-export function matchFundingGoal(profile: FundingState["profile"], readiness: Pick<ReadinessResult, "overall_score" | "status">) {
+export const CREDIT_REVIEW = "Review the company’s current credit reports for reported accounts, payment history, balances, and recent inquiries. Review personal credit through 3B staff when relevant to a specific offer. Confirm the lender’s credit requirements, guarantee, collateral, total cost, and payment schedule in writing.";
+
+export function matchFundingGoal(state: FundingState, readiness: Pick<ReadinessResult, "overall_score" | "status">, creditReportStatus: string) {
+  const { profile, business, snapshot } = state;
   const goal = FUNDING_GOAL_TYPES.find(({ value }) => value === profile?.funding_goal_type);
   if (!goal) return null;
   const route = routes[goal.value];
@@ -36,13 +39,28 @@ export function matchFundingGoal(profile: FundingState["profile"], readiness: Pi
     readinessAction,
     score: readiness.overall_score,
     amount: profile?.target_amount ?? null,
-    stages: [
+    review: [
+      ["Business formation date", business.formation_date || "Not provided"],
+      ["D-U-N-S number", business.duns_number ? "On file" : "Not provided"],
+      ["Business credit report", creditReportStatus],
+      ["Reported revenue and debt", snapshot ? `See financial snapshot dated ${snapshot.as_of_date}` : "Financial snapshot needed"],
+      ["Credit and repayment review", "Confirm current reports, debt payments, and cash available in a slow month"],
+    ],
+    paths: [
       {
-        title: "Size the first request",
-        detail: firstExpenses[goal.value] + " Subtract business cash available for the purchase after operating reserves. Use the remaining gap as the estimated first request. Compare written no-PG offers and check that payments fit conservative cash flow after expenses and existing debt.",
+        title: "Review the full request",
+        detail: "If the full amount is needed, compare quotes for the original goal when current credit, financials, and repayment evidence support the request. Start with business-only terms and review the payment under a slower-sales scenario.",
       },
       {
-        title: "Build a payment record",
+        title: "Consider a smaller phase if useful",
+        detail: firstExpenses[goal.value] + " Subtract business cash available for the purchase after operating reserves. Use the remaining gap as the estimated phase request if the phase can operate on its own. Compare written no-PG offers and check that payments fit conservative cash flow after expenses and existing debt.",
+      },
+      {
+        title: "Review existing business assets",
+        detail: "If the business owns usable deposits, equipment, or eligible invoices, compare an asset-backed quote. Verify ownership, current value and liens, the advance rate, and any guarantee.",
+      },
+      {
+        title: "Build a payment record when more evidence is needed",
         detail: "Pay on time, keep statements and receipts, and check whether the lender or vendor reports under the company’s name. Document the first phase’s actual sales, costs, and cash available after debt payments.",
       },
       {
