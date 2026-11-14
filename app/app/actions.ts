@@ -254,7 +254,7 @@ export async function saveBanking(_prev: ActionState, fd: FormData): Promise<Act
   const { user, supabase, business } = await requireActiveBusiness();
   const bankStatus = oneOf(str(fd, "bank_account_status"), BANK_ACCOUNT_STATUSES.map((b) => b.value));
   const preRevenue = fd.get("pre_revenue") === "on";
-  const fields = ["monthly_revenue", "annual_revenue", "checking_balance", "average_daily_balance", "existing_business_debt", "nsf_count_90d"] as const;
+  const fields = ["monthly_revenue", "annual_revenue", "checking_balance", "cash_on_hand", "average_daily_balance", "existing_business_debt", "nsf_count_90d"] as const;
   const values: Record<string, number | null> = {};
   const fieldErrors: Record<string, string> = {};
   for (const f of fields) {
@@ -279,6 +279,7 @@ export async function saveBanking(_prev: ActionState, fd: FormData): Promise<Act
     monthly_revenue: preRevenue ? 0 : values.monthly_revenue,
     annual_revenue: preRevenue ? 0 : values.annual_revenue,
     checking_balance: values.checking_balance,
+    cash_on_hand: values.cash_on_hand,
     average_daily_balance: values.average_daily_balance,
     existing_business_debt: values.existing_business_debt,
     nsf_count_90d: values.nsf_count_90d != null ? Math.round(values.nsf_count_90d) : null,

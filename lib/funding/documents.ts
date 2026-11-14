@@ -63,6 +63,13 @@ export const DOCUMENT_REQUIREMENTS: DocumentRequirement[] = [
     classification: "conditionally_required",
   },
   {
+    documentType: "business_asset_register",
+    category: "financial_statements",
+    label: "Existing asset register",
+    help: "Upload a dated list of business-owned cash, deposits, equipment, or receivables, with supported value, liens, and unrestricted or pledged status. Label personal or leased property separately.",
+    classification: "optional",
+  },
+  {
     documentType: "trucking_expense_summary",
     category: "financial_statements",
     label: "Trucking expense summary",

@@ -30,6 +30,16 @@ export default async function BankablePacketPage() {
         <p className="fm-muted">{CASH_FLOW_GUIDANCE}</p>
         <dl>{packet.finances.map(([label, value]) => <div key={label}><dt><strong>{label}</strong></dt><dd>{value}</dd></div>)}</dl>
       </section>
+      {packet.goalFit && (
+        <section className="fm-card fm-stack" id="funding-goal-match">
+          <h2 className="fm-h2">Financing options for your request</h2>
+          <h3 className="fm-h3">{packet.goalFit.type}</h3>
+          <p>3B readiness score {packet.goalFit.score}/100</p>
+          <p>{packet.goalFit.readinessAction}</p>
+          <p>{packet.goalFit.evidence}</p>
+          <p className="fm-muted">The score measures preparation. Check for a no-personal-guarantee offer and confirm affordable payments before estimating a financeable amount.</p>
+        </section>
+      )}
       <section className="fm-card fm-stack">
         <h2 className="fm-h2">Bankability checklist</h2>
         <p className="fm-muted">On file means recorded in the portal. 3B Funding Desk eligibility requires a separate evidence review.</p>
@@ -55,6 +65,8 @@ export default async function BankablePacketPage() {
       </section>
       <section className="fm-card fm-stack" id="capital-preparation">
         <h2 className="fm-h2">Assets and repayment capacity</h2>
+        <Link href="/app/setup/banking">Update money on hand</Link>
+        <Link href="/app/setup/documents#business_asset_register">Upload existing asset register</Link>
         <ul className="fm-mini">{packet.capitalPreparation.map((item) => <li key={item}>{item}</li>)}</ul>
       </section>
       {packet.truckingPreparation.length > 0 && (

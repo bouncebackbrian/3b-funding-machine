@@ -5228,6 +5228,7 @@ export type Database = {
           as_of_date: string
           average_daily_balance: number | null
           business_id: string
+          cash_on_hand: number | null
           cash_reserves: number | null
           checking_balance: number | null
           created_at: string
@@ -5255,6 +5256,7 @@ export type Database = {
           as_of_date?: string
           average_daily_balance?: number | null
           business_id: string
+          cash_on_hand?: number | null
           cash_reserves?: number | null
           checking_balance?: number | null
           created_at?: string
@@ -5282,6 +5284,7 @@ export type Database = {
           as_of_date?: string
           average_daily_balance?: number | null
           business_id?: string
+          cash_on_hand?: number | null
           cash_reserves?: number | null
           checking_balance?: number | null
           created_at?: string

@@ -47,6 +47,7 @@ it("exports trucking guidance for a trucking business and keeps the asset guidan
   state.equipment = null;
   const packetForState = () => renderPacketSummary(buildPacket(state, evaluateReadiness(state, LIVE_RULES, now), now));
   expect(packetForState()).toContain("ASSETS AND REPAYMENT CAPACITY");
+  expect(packetForState()).toContain("Existing asset register");
   expect(packetForState()).not.toContain("TRUCKING OPERATING CHECKLIST");
   expect(packetForState()).not.toContain("Trucking expense summary");
   state.business.naics_code = "484121";
@@ -54,4 +55,23 @@ it("exports trucking guidance for a trucking business and keeps the asset guidan
   expect(packetForState()).toContain("available loan value");
   expect(packetForState()).toContain("Fleet Commander or Expense Tracker");
   expect(packetForState()).toContain("Trucking expense summary");
+});
+
+it("exports cash on hand separately from the business checking balance", () => {
+  const now = new Date("2026-11-14T12:00:00Z");
+  const state = completeState();
+  Object.assign(state.snapshot!, { checking_balance: 4000, cash_on_hand: 500 });
+  const summary = renderPacketSummary(buildPacket(state, evaluateReadiness(state, LIVE_RULES, now), now));
+  expect(summary).toContain("Business checking balance: $4,000");
+  expect(summary).toContain("Other unrestricted business cash on hand: $500");
+});
+
+it("matches an equipment request without changing the client's target based on the score", () => {
+  const state = completeState();
+  state.profile!.target_amount = 50000;
+  const readiness = evaluateReadiness(state, LIVE_RULES, new Date("2026-11-14T12:00:00Z"));
+  for (const score of [25, 95]) {
+    const packet = buildPacket(state, { ...readiness, overall_score: score }, new Date("2026-11-14T12:00:00Z"));
+    expect(packet.goalFit).toMatchObject({ type: "Equipment loan or lease", amount: 50000, score });
+  }
 });
