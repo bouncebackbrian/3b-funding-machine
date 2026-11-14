@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CREDIT_BUILDERS_START_URL, FUNDING_UNLOCK_FICO } from "@/lib/funding/credit-unlock";
 
 const fundingTypes = [
   {
@@ -121,7 +122,7 @@ export default function FundingMachinePage() {
             the capital your business deserves.
           </p>
           <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
-            <Link href="/signup" className="btn-primary">Start My Funding Setup →</Link>
+            <a href={CREDIT_BUILDERS_START_URL} className="btn-primary">Start with 3B Credit Builders →</a>
             <Link href="/llc-funding" className="btn-outline">LLC Funding Mode</Link>
             <a href="#how-it-works" className="btn-outline">How It Works</a>
           </div>
@@ -205,19 +206,14 @@ export default function FundingMachinePage() {
                   3B Ecosystem Advantage
                 </p>
                 <h3 style={{ fontSize: "clamp(1.25rem, 3vw, 1.75rem)", fontWeight: 900, color: "#F5F7FA", marginBottom: "14px", lineHeight: 1.2 }}>
-                  Funding is stronger when<br />your credit is clean.
+                  Build personal credit and prepare your business
                 </h3>
                 <p style={{ fontSize: "15px", lineHeight: 1.75, color: "var(--text-muted)", marginBottom: "24px" }}>
-                  The 3B Funding Machine works hand-in-hand with{" "}
-                  <a href="https://credit.bouncebackbrian.com" style={{ color: "#00E676", textDecoration: "none", fontWeight: 600 }}>
-                    3B Credit Builder
-                  </a>
-                  . Fix your credit first, then unlock higher amounts at better rates.
-                  Each product makes the others more powerful.
+                  Start in 3B Credit Builders and work on your business setup as you build personal credit. Funding Machine access unlocks permanently once 3B verifies active MyFreeScoreNow VIP and {FUNDING_UNLOCK_FICO}+ FICO at all three bureaus.
                 </p>
                 <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-                  <a href="https://credit.bouncebackbrian.com" className="btn-outline" style={{ fontSize: "14px", padding: "10px 20px" }}>
-                    Fix Your Credit First →
+                  <a href={CREDIT_BUILDERS_START_URL} className="btn-outline" style={{ fontSize: "14px", padding: "10px 20px" }}>
+                    Open 3B Credit Builders →
                   </a>
                   <a href="https://bouncebackbrian.com" style={{
                     border: "1px solid var(--border-subtle)", color: "var(--text-muted)",
@@ -265,7 +261,7 @@ export default function FundingMachinePage() {
               Build your funding profile in about 10 minutes. Get your readiness score and a
               step-by-step roadmap to funding — saved to your 3B account so you can pick up anytime.
             </p>
-            <Link href="/signup" className="btn-primary">Create My Free Account →</Link>
+            <a href={CREDIT_BUILDERS_START_URL} className="btn-primary">Start with 3B Credit Builders →</a>
             <p style={{ fontSize: "13px", color: "var(--text-dim)", marginTop: "16px" }}>
               Already have a 3B account? <Link href="/login" style={{ color: "#00E676" }}>Sign in</Link>
             </p>
