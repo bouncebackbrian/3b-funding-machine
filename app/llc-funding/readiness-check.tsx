@@ -106,7 +106,7 @@ export function LlcFundingCheck() {
         <p className="fm-muted fm-small">For funding preparation. Lenders set their own criteria and make their own decisions.</p>
         <div className="flex flex-wrap gap-3">
           <Link className="fm-btn fm-btn-primary" href="/app">Open full funding setup</Link>
-          <Link className="fm-btn fm-btn-ghost" href="/signup">Create an account</Link>
+          <Link className="fm-btn fm-btn-ghost" href="/signup">Start with 3B Credit Builders</Link>
         </div>
       </section>
     </>

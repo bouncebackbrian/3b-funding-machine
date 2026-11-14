@@ -1,4 +1,5 @@
 import { isTruckingBusiness } from "./capital-prep";
+import { FUNDING_UNLOCK_FICO } from "./credit-unlock";
 import type { ReadinessResult } from "./readiness";
 import type { FundingState } from "./types";
 
@@ -108,7 +109,7 @@ export function buildRoadmap(state: FundingState, readiness: ReadinessResult): P
     {
       category: "credit",
       title: "Review personal credit through 3B Credit Builders",
-      description: "Use your existing MyFreeScoreNow membership or choose Basic to start or VIP to work toward the packet unlock. Upload your current report PDF in 3B Credit Builders. 3B verifies active VIP and 680+ FICO at every bureau for the unlock.",
+      description: `Start in 3B Credit Builders and upload your current MyFreeScoreNow report there. 3B verifies active VIP and ${FUNDING_UNLOCK_FICO}+ FICO at every bureau for the permanent unlock.`,
       action_url: "/app/setup/owners#personal-credit",
     },
   );

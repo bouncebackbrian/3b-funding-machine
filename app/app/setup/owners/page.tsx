@@ -1,7 +1,7 @@
 import { ActionForm, Field, Select, SubmitButton } from "@/components/form";
 import { StepHeader } from "@/components/step-header";
 import { requireFundingContext } from "@/lib/dal";
-import { FUNDING_UNLOCK_FICO } from "@/lib/funding/credit-unlock";
+import { CREDIT_BUILDERS_START_URL, FUNDING_UNLOCK_FICO } from "@/lib/funding/credit-unlock";
 import { addOwner, continueFromOwners, removeOwner } from "../../actions";
 
 export default async function OwnersStep({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
@@ -24,12 +24,12 @@ export default async function OwnersStep({ searchParams }: { searchParams: Promi
           <li><strong>Already a member?</strong> Use your current MyFreeScoreNow membership.</li>
         </ul>
         <div className="flex flex-wrap gap-3">
-          <a href="https://credit.bouncebackbrian.com/membership/choose">Compare Basic and VIP</a>
+          <a href={CREDIT_BUILDERS_START_URL}>Compare Basic and VIP</a>
           <a href="https://credit.bouncebackbrian.com/login">Sign in to Credit Builders</a>
         </div>
         <p>Confirm which bureaus your plan covers. Download your current report PDF from MyFreeScoreNow, upload it in 3B Credit Builders, then return here to continue setup.</p>
         <p className="fm-muted fm-small">
-          MyFreeScoreNow provides consumer credit reports and educational scores. 3B verifies VIP membership and a FICO score of at least {FUNDING_UNLOCK_FICO} at every bureau for the packet unlock. Funding Desk application support has a separate review, including Credit Builders completion and 700+ FICO at every bureau. Keep personal reports in Credit Builders.
+          MyFreeScoreNow provides consumer credit reports and educational scores. 3B verifies active VIP and a FICO score of at least {FUNDING_UNLOCK_FICO} at every bureau for the one-time unlock. Funding Desk application support requires a separate review of current credit and business records. Keep personal reports in Credit Builders.
         </p>
         <p className="fm-muted fm-small">MyFreeScoreNow bills for its membership. 3B may earn a commission on referrals.</p>
       </section>

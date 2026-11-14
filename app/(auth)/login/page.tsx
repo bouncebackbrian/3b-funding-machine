@@ -1,6 +1,6 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { ActionForm, Field, SubmitButton } from "@/components/form";
+import { CREDIT_BUILDERS_START_URL } from "@/lib/funding/credit-unlock";
 import { signIn } from "../actions";
 
 export const metadata: Metadata = { title: "Sign in", robots: { index: false } };
@@ -21,7 +21,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         <SubmitButton pendingText="Signing in…">Sign in</SubmitButton>
       </ActionForm>
       <p className="fm-muted fm-center">
-        New here? <Link href="/signup">Create your account</Link>
+        New here? <a href={CREDIT_BUILDERS_START_URL}>Start with 3B Credit Builders</a>
       </p>
     </>
   );

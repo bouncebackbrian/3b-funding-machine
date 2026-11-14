@@ -3,8 +3,8 @@ import { buildPacket, renderPacketSummary } from "@/lib/funding/packet";
 import { evaluateReadiness } from "@/lib/funding/readiness";
 
 export async function GET(request: Request) {
-  const { business, state } = await requireFundingContext();
-  if (!await getFundingUnlock(business.id)) return Response.redirect(new URL("/app/packet", request.url));
+  if (!await getFundingUnlock()) return Response.redirect(new URL("/app/packet", request.url));
+  const { state } = await requireFundingContext();
   if (!state.readiness) return Response.redirect(new URL("/app/setup/review", request.url));
 
   const now = new Date();

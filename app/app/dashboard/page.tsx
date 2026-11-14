@@ -14,7 +14,7 @@ const money = (n: number | null | undefined) =>
 
 export default async function Dashboard() {
   const { business, state } = await requireFundingContext();
-  const unlocked = await getFundingUnlock(business.id);
+  const unlocked = await getFundingUnlock();
   const progress = sequenceProgress(state);
   const alignment = checkAlignment(business);
   const goal = FUNDING_GOAL_TYPES.find((g) => g.value === state.profile?.funding_goal_type)?.label;
