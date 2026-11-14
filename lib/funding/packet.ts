@@ -1,5 +1,5 @@
 import { CAPITAL_PREP, truckingPreparation } from "./capital-prep";
-import { isProvided, requirementsForGoal } from "./documents";
+import { isProvided, requirementsForFunding } from "./documents";
 import type { ReadinessResult } from "./readiness";
 import { FUNDING_GOAL_TYPES, type FundingState } from "./types";
 
@@ -43,7 +43,7 @@ const outcomes = {
 export function buildPacket(state: FundingState, readiness: ReadinessResult, now: Date) {
   const { business, profile, snapshot, equipment } = state;
   const goal = FUNDING_GOAL_TYPES.find((item) => item.value === profile?.funding_goal_type)?.label;
-  const documents = requirementsForGoal(profile?.funding_goal_type).map((requirement) => {
+  const documents = requirementsForFunding(state).map((requirement) => {
     const record = state.documents.find((document) => document.document_type === requirement.documentType);
     const path = record?.storage_path;
     const prefix = `${business.id}/${requirement.documentType}/`;

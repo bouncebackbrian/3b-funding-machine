@@ -1,4 +1,5 @@
-import type { FundingDocument, FundingGoalType } from "./types";
+import { isTruckingBusiness } from "./capital-prep";
+import type { FundingDocument, FundingGoalType, FundingState } from "./types";
 
 type Category = FundingDocument["category"];
 type Classification = "required" | "conditionally_required" | "optional";
@@ -11,6 +12,7 @@ export interface DocumentRequirement {
   classification: Classification;
   /** Only requested for these goals; omitted = all goals. */
   goals?: FundingGoalType[];
+  truckingOnly?: boolean;
 }
 
 /**
@@ -61,6 +63,14 @@ export const DOCUMENT_REQUIREMENTS: DocumentRequirement[] = [
     classification: "conditionally_required",
   },
   {
+    documentType: "trucking_expense_summary",
+    category: "financial_statements",
+    label: "Trucking expense summary",
+    help: "Upload a dated PDF summary from Fleet Commander or Expense Tracker for this business. If combining both sources, count each transaction once.",
+    classification: "optional",
+    truckingOnly: true,
+  },
+  {
     documentType: "repayment_plan",
     category: "projections",
     label: "Use-of-funds breakdown and repayment plan",
@@ -98,8 +108,12 @@ export const DOCUMENT_REQUIREMENTS: DocumentRequirement[] = [
   },
 ];
 
-export function requirementsForGoal(goal: string | null | undefined): DocumentRequirement[] {
-  return DOCUMENT_REQUIREMENTS.filter((r) => !r.goals || (goal != null && r.goals.includes(goal as FundingGoalType)));
+export function requirementsForFunding(state: FundingState): DocumentRequirement[] {
+  const goal = state.profile?.funding_goal_type;
+  const trucking = isTruckingBusiness(state) || state.documents.some((doc) => doc.document_type === "trucking_expense_summary");
+  return DOCUMENT_REQUIREMENTS.filter((r) =>
+    (!r.truckingOnly || trucking) && (!r.goals || (goal != null && r.goals.includes(goal as FundingGoalType))),
+  );
 }
 
 export const PROVIDED_STATUSES = new Set(["uploaded", "under_review", "verified"]);

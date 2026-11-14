@@ -61,6 +61,7 @@ export default async function BankablePacketPage() {
         <section className="fm-card fm-stack" id="trucking-preparation">
           <h2 className="fm-h2">Trucking operating checklist</h2>
           <ul className="fm-mini">{packet.truckingPreparation.map((item) => <li key={item}>{item}</li>)}</ul>
+          <Link href="/app/setup/documents#trucking_expense_summary">Upload trucking expense summary</Link>
           <a href="https://www.fmcsa.dot.gov/registration/insurance-filing-requirements">Check FMCSA insurance filing requirements</a>
         </section>
       )}

@@ -48,7 +48,10 @@ it("exports trucking guidance for a trucking business and keeps the asset guidan
   const packetForState = () => renderPacketSummary(buildPacket(state, evaluateReadiness(state, LIVE_RULES, now), now));
   expect(packetForState()).toContain("ASSETS AND REPAYMENT CAPACITY");
   expect(packetForState()).not.toContain("TRUCKING OPERATING CHECKLIST");
+  expect(packetForState()).not.toContain("Trucking expense summary");
   state.business.naics_code = "484121";
   expect(packetForState()).toContain("TRUCKING OPERATING CHECKLIST");
   expect(packetForState()).toContain("available loan value");
+  expect(packetForState()).toContain("Fleet Commander or Expense Tracker");
+  expect(packetForState()).toContain("Trucking expense summary");
 });

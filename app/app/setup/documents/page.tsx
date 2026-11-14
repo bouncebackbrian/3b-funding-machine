@@ -2,7 +2,7 @@ import Link from "next/link";
 import { DocumentUpload } from "@/components/document-upload";
 import { StepHeader } from "@/components/step-header";
 import { requireFundingContext } from "@/lib/dal";
-import { isProvided, requirementsForGoal } from "@/lib/funding/documents";
+import { isProvided, requirementsForFunding } from "@/lib/funding/documents";
 import { sequenceProgress } from "@/lib/funding/sequence";
 import { markDocumentNotApplicable, restoreDocumentApplicability } from "../../actions";
 
@@ -10,7 +10,7 @@ const CLASS_LABEL = { required: "Required", conditionally_required: "If it appli
 
 export default async function DocumentsStep() {
   const { business, state } = await requireFundingContext();
-  const reqs = requirementsForGoal(state.profile?.funding_goal_type);
+  const reqs = requirementsForFunding(state);
   const { blockingDone } = sequenceProgress(state);
 
   return (
@@ -25,7 +25,7 @@ export default async function DocumentsStep() {
           const provided = isProvided(doc);
           const na = doc?.requirement_classification === "not_applicable";
           return (
-            <li key={r.documentType} className="fm-doc">
+            <li key={r.documentType} id={r.documentType} className="fm-doc">
               <div className="fm-doc-head">
                 <div>
                   <strong>{r.label}</strong> <span className={`fm-tag fm-tag-${r.classification}`}>{CLASS_LABEL[r.classification]}</span>
