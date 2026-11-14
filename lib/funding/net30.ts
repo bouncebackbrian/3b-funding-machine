@@ -1,4 +1,13 @@
-export const PRINTING_VENDORS = [
+export type BusinessCreditVendor = {
+  name: string;
+  use: string;
+  url: string;
+  affiliate?: boolean;
+};
+
+export const AFFILIATE_DISCLOSURE = "3B may earn a commission if you sign up or buy through this link.";
+
+export const PRINTING_VENDORS: BusinessCreditVendor[] = [
   {
     name: "Shirtsy",
     use: "Custom work shirts, hoodies, business cards, and promotional products. The vendor advertises no personal guarantee and monthly business-credit reporting. Membership costs $99 per 360-day term. Confirm which bureaus receive payments before enrolling.",
@@ -6,8 +15,9 @@ export const PRINTING_VENDORS = [
   },
   {
     name: "The CEO Creative",
-    use: "Branded apparel and print supplies. The vendor advertises EIN-only Net 30, no personal guarantee, monthly payment reporting, and a $60 minimum order. Confirm current fees and bureaus before enrolling.",
-    url: "https://theceocreative.com/business-net-30-account/",
+    use: "Office supplies, printing, and branded apparel. The vendor advertises EIN-only Net 30 with no personal guarantee. Activation requires a paid membership, and eligible orders have a $60 minimum and an upfront deposit. Confirm reporting requirements before enrolling.",
+    url: "https://theceocreative.com/business-net-30-account/#Bouncebackbrian",
+    affiliate: true,
   },
 ];
 

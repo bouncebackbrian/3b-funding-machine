@@ -4,6 +4,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getReadinessRules, requireFundingContext } from "@/lib/dal";
 import { buildPacket, BUSINESS_CREDIT_EXAMPLES, BUSINESS_CREDIT_GUIDANCE, CASH_FLOW_GUIDANCE, PACKET_NOTICE, PACKET_TITLE, PUBLIC_LISTING_GUIDANCE } from "@/lib/funding/packet";
+import { AFFILIATE_DISCLOSURE } from "@/lib/funding/net30";
 import { DownloadDocuments } from "./download-documents";
 import { evaluateReadiness } from "@/lib/funding/readiness";
 
@@ -102,7 +103,10 @@ export default async function BankablePacketPage() {
         <Link href="/app/net-30">Track Net 30 invoices and payments</Link>
         <p>{BUSINESS_CREDIT_GUIDANCE}</p>
         <ul className="fm-mini">{BUSINESS_CREDIT_EXAMPLES.map((example) => (
-          <li key={example.name}><a href={example.url}>{example.name}</a> · {example.use}</li>
+          <li key={example.name}>
+            <a href={example.url} rel={example.affiliate ? "sponsored" : undefined}>{example.name}</a> · {example.use}
+            {example.affiliate && <span className="fm-muted"> {AFFILIATE_DISCLOSURE}</span>}
+          </li>
         ))}</ul>
       </section>
       <section className="fm-card fm-stack">
