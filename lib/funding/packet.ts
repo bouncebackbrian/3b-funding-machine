@@ -23,6 +23,8 @@ export const BUSINESS_CREDIT_EXAMPLES = [
   },
 ];
 
+export const PUBLIC_LISTING_GUIDANCE = "For eligible businesses, claim or verify Google Business Profile. Use a service area and hide the street address on Google if customers aren’t served at that address. Check 411 availability with the phone provider. Compare public details with the Company page and record intentional differences in the private packet.";
+
 export const BUSINESS_CREDIT_GUIDANCE = "Choose accounts for purchases the business already needs and can pay on time. Ask the provider in writing whether it reports positive payment history, to which business bureaus, and how often. Keep invoices and payment records and check the business report before marking a trade line as reporting.";
 
 const money = (value: number | null | undefined) =>
@@ -64,6 +66,17 @@ export function buildPacket(state: FundingState, readiness: ReadinessResult, now
   return {
     date: new Intl.DateTimeFormat("en-US", { dateStyle: "long", timeZone: "America/Los_Angeles" }).format(now),
     businessName: business.legal_name,
+    contact: [
+      ["Business location", [
+        business.address_line1,
+        business.address_line2,
+        [business.city, [business.state, business.zip_code].filter(Boolean).join(" ")].filter(Boolean).join(", "),
+      ].filter(Boolean).join("\n") || "Not provided"],
+      ["Business phone", business.business_phone || "Not provided"],
+      ["Business email", business.business_email || "Not provided"],
+      ["Business website", business.website_url || "Not provided"],
+      ["NAICS code on file", business.naics_code || "Not provided"],
+    ],
     funding: [
       ["Entity", [business.entity_type, business.formation_state].filter(Boolean).join(" · ")],
       ["Funding goal", goal ?? "Not provided"],
@@ -87,6 +100,8 @@ export function buildPacket(state: FundingState, readiness: ReadinessResult, now
     })),
     documents,
     lenderChecklist: [
+      "Compare the business address and phone in this packet with the supporting documents that show them. Explain legitimate differences, such as a separate registered-agent or mailing address.",
+      "Share the public Company page with the banker so they can review the business name, services, location, phone, and email. Send financials and supporting documents through the lender’s secure channel.",
       "Confirm required ownership records, operating agreement, licenses, and good-standing evidence with the lender.",
       "Break down the use of funds by item and identify the source of any owner contribution.",
       "Document repayment from business cash flow. Include current financial statements or cash-flow projections with assumptions as applicable.",
@@ -100,6 +115,7 @@ export type BankablePacket = ReturnType<typeof buildPacket>;
 export function renderPacketSummary(packet: BankablePacket, evidence: string[] = []) {
   return [
     PACKET_TITLE, packet.businessName, packet.date, PACKET_NOTICE,
+    "", "BUSINESS CONTACT", ...packet.contact.map(([label, value]) => `${label}: ${value}`),
     "", "FUNDING REQUEST", ...packet.funding.map(([label, value]) => `${label}: ${value}`),
     "", "CLIENT-REPORTED FINANCIALS", ...packet.finances.map(([label, value]) => `${label}: ${value}`),
     "", "BANKABILITY CHECKLIST", "On file means recorded in the portal. 3B Funding Desk eligibility requires a separate evidence review.",
@@ -107,6 +123,7 @@ export function renderPacketSummary(packet: BankablePacket, evidence: string[] =
     "", "DOCUMENT CHECKLIST", ...packet.documents.map(({ label, status, classification }) => `- ${label} — ${status} (${classification})`),
     ...(evidence.length ? ["", "ATTACHMENTS", ...evidence] : []),
     "", "CONFIRM WITH YOUR LENDER", ...packet.lenderChecklist.map((item) => `- ${item}`),
+    "", "PUBLIC BUSINESS LISTINGS", PUBLIC_LISTING_GUIDANCE,
     "", "BUSINESS PAYMENT HISTORY", BUSINESS_CREDIT_GUIDANCE,
     ...BUSINESS_CREDIT_EXAMPLES.map(({ name, use, url }) => `- ${name} — ${use} ${url}`),
     "",
