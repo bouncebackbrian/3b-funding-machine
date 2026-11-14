@@ -37,6 +37,11 @@ export default async function BankablePacketPage() {
           <p>3B readiness score {packet.goalFit.score}/100</p>
           <p>{packet.goalFit.readinessAction}</p>
           <p>{packet.goalFit.evidence}</p>
+          <ol className="fm-mini">
+            {packet.goalFit.stages.map(({ title, detail }) => (
+              <li key={title}><strong>{title}</strong><p>{detail}</p></li>
+            ))}
+          </ol>
           <p className="fm-muted">The score measures preparation. Check for a no-personal-guarantee offer and confirm affordable payments before estimating a financeable amount.</p>
         </section>
       )}
