@@ -17,7 +17,7 @@ export default async function DocumentsStep() {
     <>
       <StepHeader
         step="documents"
-        intro="Upload what you have now — you can come back anytime. PDFs or clear phone photos, up to 10 MB each. Files are stored privately and only people on your business can open them."
+        intro="Upload files once and update them here as needed. Your readiness review uses this checklist, and the packet uses these same private files. Upload PDFs or clear photos up to 10 MB each."
       />
       <ul className="fm-docs">
         {reqs.map((r) => {

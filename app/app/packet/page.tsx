@@ -8,6 +8,7 @@ import { buildPacket, BUSINESS_CREDIT_EXAMPLES, BUSINESS_CREDIT_GUIDANCE, CASH_F
 import { AFFILIATE_DISCLOSURE } from "@/lib/funding/net30";
 import { DownloadDocuments } from "./download-documents";
 import { evaluateReadiness } from "@/lib/funding/readiness";
+import { allDisclosuresAccepted } from "@/lib/funding/disclosures";
 
 export default async function BankablePacketPage() {
   if (!await getFundingUnlock()) {
@@ -30,6 +31,7 @@ export default async function BankablePacketPage() {
     );
   }
   const { state } = await requireFundingContext();
+  if (!allDisclosuresAccepted(state.consents)) redirect("/app/setup/disclosures");
   if (!state.readiness) redirect("/app/setup/review");
 
   const now = new Date();
@@ -131,12 +133,10 @@ export default async function BankablePacketPage() {
       </section>
       <section className="fm-card fm-stack">
         <h2 className="fm-h2">Download packet</h2>
-        <p>Start with the summary. Add the supporting files the lender asks for through its secure channel.</p>
+        <p>Download one PDF with your worksheet, readiness checklist, signed disclosures, and readable files from Business Vault. Review the attachment list and any missing items before sharing.</p>
         <div className="flex flex-wrap gap-3">
           <a href="/app/packet/download" className="fm-btn fm-btn-primary">Download summary</a>
-          {packet.documents.some((doc) => doc.path) && (
-            <DownloadDocuments packet={packet} />
-          )}
+          <DownloadDocuments packet={packet} />
         </div>
       </section>
     </article>

@@ -100,7 +100,7 @@ export function completeState(): FundingState {
     owners: [{ id: "o1", full_name: "Jane Owner", ownership_percent: 100 } as FundingState["owners"][number]],
     snapshot: { as_of_date: "2026-11-01", monthly_revenue: 15000, annual_revenue: 180000 } as FundingState["snapshot"],
     consents: DISCLOSURES.map(
-      (d) => ({ disclosure_type: d.type, disclosure_version: d.version, accepted: true }) as FundingState["consents"][number],
+      (d) => ({ disclosure_type: d.type, disclosure_version: d.version, accepted: true, signer_name: "Example Owner", accepted_at: NOW.toISOString() }) as FundingState["consents"][number],
     ),
     documents: [
       { document_type: "formation_documents", status: "uploaded" },
