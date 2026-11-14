@@ -73,9 +73,20 @@ export default async function Dashboard() {
         <section className="fm-card">
           <h2 className="fm-h3">Funding readiness</h2>
           <ScoreBadge score={Number(state.readiness.overall_score)} status={state.readiness.status as ReadinessStatus} />
+          <Link href="/app/packet" className="fm-btn fm-btn-ghost">Open readiness packet</Link>
           <p className="fm-muted fm-small">Last scored {new Date(state.readiness.computed_at).toLocaleDateString()}.</p>
         </section>
       )}
+
+      <section className="fm-card fm-stack">
+        <div>
+          <h2 className="fm-h3">LLC Funding Mode</h2>
+          <p className="fm-muted fm-small">Check a funding scenario and see what to prepare for your LLC.</p>
+        </div>
+        <div>
+          <Link href="/llc-funding" className="fm-btn fm-btn-ghost">Run an LLC readiness check</Link>
+        </div>
+      </section>
 
       <AlignmentGrid checks={alignment} />
       <MediaGroupCta needs={mediaNeeds(alignment)} domain={domainHint(business)} />

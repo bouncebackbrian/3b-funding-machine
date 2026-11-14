@@ -53,7 +53,7 @@ const GOAL_STEPS: Record<string, Omit<PlannedStep, "sequence" | "dependency_sequ
     { category: "banking", title: "Keep 3–6 months of clean statements", description: "Consistent deposits and no overdrafts/NSFs strengthen line-of-credit reviews.", action_url: null },
   ],
   business_credit: [
-    { category: "credit", title: "Open vendor accounts that report to business bureaus", description: "Net-30 vendor accounts you actually use for business purchases, paid on time, build a business credit history.", action_url: null },
+    { category: "credit", title: "Open vendor accounts that report to business bureaus", description: "Use vendor terms or business fuel cards for expenses you already have. Confirm whether positive payment history is reported and pay by the due date.", action_url: "/app/packet#business-credit" },
   ],
   real_estate: [
     { category: "application_prep", title: "Gather property details", description: "Address, purchase price or value, intended business use, and any existing debt on the property.", action_url: null },

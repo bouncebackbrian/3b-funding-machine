@@ -10,7 +10,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const [businesses, active] = await Promise.all([getUserBusinesses(), getActiveBusiness()]);
 
   return (
-    <div className="fm-shell">
+    <div className="fm-shell" data-clarity-mask="true">
       <header className="fm-topbar">
         <Link href="/app/dashboard" className="fm-brand">
           3B <span className="gradient-text-funding">Funding</span>

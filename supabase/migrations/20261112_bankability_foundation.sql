@@ -27,9 +27,9 @@ select v.rule_key, v.category, v.label, v.why_it_matters, v.weight, false, true,
 from (values
   ('business_email_on_domain', 'business_contact', 'Business email on your own domain',
    'An email on your business domain (not Gmail/Yahoo) signals an established business to lenders and vendors.', 3, 71),
-  ('identity_aligned', 'identity_alignment', 'Business identity matches everywhere',
+  ('identity_aligned', 'identity_entity', 'Business identity matches everywhere',
    'Lenders and bureaus compare your name, address, phone, email and website across records. Mismatches slow or stop reviews.', 5, 72),
-  ('duns_on_file', 'business_credit', 'D-U-N-S number on file',
+  ('duns_on_file', 'credit_qualification', 'D-U-N-S number on file',
    'A free D-U-N-S number opens your business credit file with Dun & Bradstreet, which many lenders and vendors check.', 4, 115)
 ) as v(rule_key, category, label, why_it_matters, weight, sort_order)
 where not exists (select 1 from public.funding_readiness_rules r where r.rule_key = v.rule_key);

@@ -68,6 +68,12 @@ export default async function RoadmapPage() {
         {state.readiness && <ScoreBadge score={Number(state.readiness.overall_score)} status={state.readiness.status as ReadinessStatus} />}
       </header>
 
+      <section className="fm-card">
+        <h2 className="fm-h3">Bankable Readiness Packet</h2>
+        <p className="fm-muted">Review your request, evidence, and every remaining gap before talking to a lender.</p>
+        <Link href="/app/packet" className="fm-btn fm-btn-primary">Open readiness packet</Link>
+      </section>
+
       {nextUp && (
         <section className="fm-card fm-next">
           <p className="fm-eyebrow">Do this next</p>
