@@ -1,3 +1,4 @@
+import { truckingPreparation } from "./capital-prep";
 import type { ReadinessResult } from "./readiness";
 import type { FundingState } from "./types";
 
@@ -139,6 +140,22 @@ export function buildRoadmap(state: FundingState, readiness: ReadinessResult): P
     description: "For an eligible business, claim or verify its Google Business Profile. Ask the phone provider whether it offers a 411 listing. Match the public name, phone, website, and storefront address or service area to the Company page.",
     action_url: "/app/packet#public-listings",
   });
+
+  steps.push({
+    category: "application_prep",
+    title: "Document business assets and repayment capacity",
+    description: "List available cash, owned assets, and liens. Compare operating cash flow with existing debt and the new payment. Check small business-only financing offers first.",
+    action_url: "/app/packet#capital-preparation",
+  });
+
+  if (truckingPreparation(state).length > 0) {
+    steps.push({
+      category: "banking",
+      title: "Set up trucking expenses and reserves",
+      description: "Review business cellular service, vehicle expenses, commercial insurance, fuel cards, and the repair reserve. The packet also includes an optional review of an existing IUL policy.",
+      action_url: "/app/packet#trucking-preparation",
+    });
+  }
 
   const goal = state.profile?.funding_goal_type ?? "other";
   steps.push(...(GOAL_STEPS[goal] ?? GOAL_STEPS.other));
