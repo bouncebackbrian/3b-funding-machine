@@ -73,6 +73,7 @@ export default async function Dashboard() {
         <section className="fm-card">
           <h2 className="fm-h3">Funding readiness</h2>
           <ScoreBadge score={Number(state.readiness.overall_score)} status={state.readiness.status as ReadinessStatus} />
+          <Link href="/app/packet" className="fm-btn fm-btn-ghost">Open readiness packet</Link>
           <p className="fm-muted fm-small">Last scored {new Date(state.readiness.computed_at).toLocaleDateString()}.</p>
         </section>
       )}

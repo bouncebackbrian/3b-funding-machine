@@ -21,7 +21,7 @@ export default async function ReviewStep() {
         <p className="fm-eyebrow">Final step</p>
         <h1 className="fm-h1">Your funding readiness</h1>
         <p className="fm-muted">
-          Scored against the same checklist lenders run first. Next, we&apos;ll turn every gap into an ordered roadmap.
+          Check your profile against the 3B readiness checklist. Get a roadmap and a packet with your funding request, documents, and remaining gaps.
         </p>
       </header>
       <ScoreBadge score={preview.overall_score} status={preview.status} />
