@@ -49,7 +49,7 @@ export function matchFundingGoal(state: FundingState, readiness: Pick<ReadinessR
     paths: [
       {
         title: "Review the full request",
-        detail: "If the full amount is needed, compare quotes for the original goal when current credit, financials, and repayment evidence support the request. Start with business-only terms and review the payment under a slower-sales scenario.",
+        detail: "Price the complete documented project and compare it with the original request. Compare the largest written business-only quote against the cost of the project and what cash flow supports in a slower month. If the quote is smaller, check whether it can fund a workable phase.",
       },
       {
         title: "Consider a smaller phase if useful",

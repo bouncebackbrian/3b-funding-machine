@@ -1,3 +1,4 @@
+import { AmountReview } from "./amount-review";
 import { CREDIT_REVIEW } from "@/lib/funding/goal-fit";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -53,6 +54,7 @@ export default async function BankablePacketPage() {
           <p className="fm-muted">The score measures preparation. Check for a no-personal-guarantee offer and confirm affordable payments before estimating a financeable amount.</p>
         </section>
       )}
+      {packet.goalFit && <AmountReview originalAmount={packet.goalFit.amount} />}
       <section className="fm-card fm-stack">
         <h2 className="fm-h2">Bankability checklist</h2>
         <p className="fm-muted">On file means recorded in the portal. 3B Funding Desk eligibility requires a separate evidence review.</p>
