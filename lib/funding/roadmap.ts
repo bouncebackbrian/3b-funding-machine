@@ -160,8 +160,8 @@ export function buildRoadmap(state: FundingState, readiness: ReadinessResult): P
   if (state.profile?.funding_goal_type && state.profile.target_amount) {
     steps.push({
       category: "application_prep",
-      title: "Plan a smaller first financing request",
-      description: "Price the smallest useful phase of your original goal. Check business-only terms, repayment from operating cash flow, and business credit reporting before adding debt.",
+      title: "Review business credit and compare funding paths",
+      description: "Review current credit and repayment evidence. Compare the original request, asset-backed options, and a smaller phase when useful. Check business-only terms first.",
       action_url: "/app/packet#funding-goal-match",
     });
   }

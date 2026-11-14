@@ -63,6 +63,13 @@ export const DOCUMENT_REQUIREMENTS: DocumentRequirement[] = [
     classification: "conditionally_required",
   },
   {
+    documentType: "business_credit_report",
+    category: "financial_statements",
+    label: "Current business credit report",
+    help: "Upload a dated commercial report for the company. Keep personal credit reports and personal identifiers out of this upload.",
+    classification: "optional",
+  },
+  {
     documentType: "business_asset_register",
     category: "financial_statements",
     label: "Existing asset register",

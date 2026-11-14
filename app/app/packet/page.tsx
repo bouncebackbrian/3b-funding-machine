@@ -1,3 +1,4 @@
+import { CREDIT_REVIEW } from "@/lib/funding/goal-fit";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getReadinessRules, requireFundingContext } from "@/lib/dal";
@@ -37,11 +38,18 @@ export default async function BankablePacketPage() {
           <p>3B readiness score {packet.goalFit.score}/100</p>
           <p>{packet.goalFit.readinessAction}</p>
           <p>{packet.goalFit.evidence}</p>
-          <ol className="fm-mini">
-            {packet.goalFit.stages.map(({ title, detail }) => (
+          <h3 className="fm-h3">Credit and repayment review</h3>
+          <p>{CREDIT_REVIEW}</p>
+          <dl>{packet.goalFit.review.map(([label, value]) => (
+            <div key={label}><dt><strong>{label}</strong></dt><dd>{value}</dd></div>
+          ))}</dl>
+          <Link href="/app/setup/documents#business_credit_report">Add business credit report</Link>
+          <h3 className="fm-h3">Compare funding paths</h3>
+          <ul className="fm-mini">
+            {packet.goalFit.paths.map(({ title, detail }) => (
               <li key={title}><strong>{title}</strong><p>{detail}</p></li>
             ))}
-          </ol>
+          </ul>
           <p className="fm-muted">The score measures preparation. Check for a no-personal-guarantee offer and confirm affordable payments before estimating a financeable amount.</p>
         </section>
       )}
