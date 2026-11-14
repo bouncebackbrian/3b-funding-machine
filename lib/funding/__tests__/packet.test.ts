@@ -17,3 +17,25 @@ it("does not treat a document marked verified as evidence without a file in its 
   });
   expect(renderPacketSummary(packet)).toContain("3B Funding Desk eligibility requires a separate evidence review.");
 });
+
+it("includes the business contact details and NAICS code in the exported packet", () => {
+  const now = new Date("2026-11-14T12:00:00Z");
+  const state = completeState();
+  Object.assign(state.business, {
+    address_line1: "22 Sample Street",
+    address_line2: "Suite 5",
+    city: "Reno",
+    state: "NV",
+    zip_code: "89501",
+    business_phone: "775-555-0100",
+    business_email: "hello@example.com",
+    website_url: "https://example.com",
+    naics_code: "492110",
+  });
+  const summary = renderPacketSummary(buildPacket(state, evaluateReadiness(state, LIVE_RULES, now), now));
+  expect(summary).toContain("22 Sample Street\nSuite 5\nReno, NV 89501");
+  expect(summary).toContain("775-555-0100");
+  expect(summary).toContain("hello@example.com");
+  expect(summary).toContain("https://example.com");
+  expect(summary).toContain("492110");
+});

@@ -14,7 +14,7 @@ import {
 import { DISCLOSURES } from "@/lib/funding/disclosures";
 import { ALLOWED_UPLOAD_TYPES, DOCUMENT_REQUIREMENTS, MAX_UPLOAD_BYTES } from "@/lib/funding/documents";
 import { getOrCreateFundingProfile, runReadinessAndRoadmap } from "@/lib/funding/persist";
-import { nextStepKey } from "@/lib/funding/sequence";
+import { hasBusinessLocation, nextStepKey } from "@/lib/funding/sequence";
 import {
   BANK_ACCOUNT_STATUSES,
   ENTITY_TYPES,
@@ -54,7 +54,7 @@ function goNext(step: SetupStepKey): never {
 async function requireActiveBusiness() {
   const session = await verifySession();
   const business = await getActiveBusiness();
-  if (!business) redirect("/app/setup/business");
+  if (!business) redirect("/app/setup/contact");
   return { ...session, business };
 }
 
@@ -68,7 +68,7 @@ async function setActiveBusinessCookie(id: string) {
   });
 }
 
-// ── Step 1: business foundation ─────────────────────────────────────────────
+// ── Step 2: business foundation ─────────────────────────────────────────────
 const EIN_RE = /^\d{2}-?\d{7}$/;
 const BUSINESS_TYPES = ["owner_op", "carrier", "brokerage", "fleet_management", "service", "other"] as const;
 
@@ -89,48 +89,38 @@ export async function saveBusiness(_prev: ActionState, fd: FormData): Promise<Ac
   const ein = einRaw ? `${einRaw.replace("-", "").slice(0, 2)}-${einRaw.replace("-", "").slice(2)}` : null;
   const einStatus = ein ? "approved" : oneOf(str(fd, "ein_status"), ["pending", "not_applied"] as const) ?? "not_applied";
 
-  // "create_new" lets someone who already has a 3B business start a separate one.
-  let businessId = fd.get("create_new") === "1" ? null : ((await getActiveBusiness())?.id ?? null);
-
-  if (!businessId) {
-    // Canonical ecosystem path: creates businesses + owner business_members atomically.
-    const created = await supabase.rpc("create_3b_business_for_current_user", {
-      p_company_name: legalName!,
-      p_business_type: oneOf(str(fd, "business_type"), BUSINESS_TYPES) ?? "other",
-      p_entity_type: entityType!,
-    });
-    if (created.error || !created.data) return fail(`Could not create your business: ${created.error?.message ?? "unknown error"}`);
-    businessId = created.data.id;
-    await setActiveBusinessCookie(businessId);
+  const business = await getActiveBusiness();
+  if (!business || !hasBusinessLocation(business)) {
+    redirect("/app/setup/contact");
   }
 
   const upd = await supabase
     .from("businesses")
     .update({
       legal_name: legalName!,
+      business_type: oneOf(str(fd, "business_type"), BUSINESS_TYPES) ?? business.business_type,
       dba_name: str(fd, "dba_name"),
       entity_type: entityType,
       formation_state: formationState,
       formation_date: str(fd, "formation_date"),
-      naics_code: str(fd, "naics_code"),
       ...(ein ? { ein } : {}),
       ein_status: einStatus,
     })
-    .eq("id", businessId);
+    .eq("id", business.id);
   if (upd.error) {
     if (upd.error.code === "23505") return fail("That EIN is already registered to another business in 3B. Contact support if this is your business.", { ein: "EIN already in use." });
     return fail(`Could not save your business: ${upd.error.message}`);
   }
 
   try {
-    await getOrCreateFundingProfile(supabase, businessId, user.id);
+    await getOrCreateFundingProfile(supabase, business.id, user.id);
   } catch (e) {
     return fail(`Saved your business, but could not start your funding profile: ${(e as Error).message}`);
   }
   goNext("business");
 }
 
-// ── D-U-N-S (part of the business foundation; separate form so it can't block step 1) ──
+// ── D-U-N-S (part of the business foundation; separate form so it can't block setup) ──
 const DUNS_STATUSES = ["not_applied", "requested", "assigned"] as const;
 
 export async function saveDuns(_prev: ActionState, fd: FormData): Promise<ActionState> {
@@ -156,9 +146,13 @@ export async function switchBusiness(fd: FormData) {
   redirect(back === "/app/setup/business" ? back : "/app/dashboard");
 }
 
-// ── Step 2: contact & location ──────────────────────────────────────────────
+// ── Step 1: contact & location ──────────────────────────────────────────────
 export async function saveContact(_prev: ActionState, fd: FormData): Promise<ActionState> {
-  const { supabase, business } = await requireActiveBusiness();
+  const { supabase } = await verifySession();
+  const active = await getActiveBusiness();
+  const business = fd.get("create_new") === "1" ? null : active;
+  const workingName = str(fd, "working_name");
+  const naicsCode = str(fd, "naics_code");
   const fieldErrors: Record<string, string> = {};
   const email = str(fd, "business_email");
   const website = str(fd, "website_url");
@@ -167,9 +161,22 @@ export async function saveContact(_prev: ActionState, fd: FormData): Promise<Act
   for (const k of ["address_line1", "city", "business_phone"]) if (!str(fd, k)) fieldErrors[k] = "Required.";
   if (!state || !/^[A-Z]{2}$/.test(state)) fieldErrors.state = "2-letter state code.";
   if (!zip || !/^\d{5}(-\d{4})?$/.test(zip)) fieldErrors.zip_code = "5-digit ZIP.";
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) fieldErrors.business_email = "Enter a valid email.";
+  if (!business && !workingName) fieldErrors.working_name = "Enter a working business name.";
+  if (naicsCode && !/^\d{6}$/.test(naicsCode)) fieldErrors.naics_code = "Enter a six-digit NAICS code.";
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) fieldErrors.business_email = "Enter a valid email.";
   if (website && !/^https?:\/\/\S+\.\S+/.test(website)) fieldErrors.website_url = "Start with https://";
   if (Object.keys(fieldErrors).length) return fail("Please fix the highlighted fields.", fieldErrors);
+
+  let businessId = business?.id;
+  if (!businessId) {
+    const created = await supabase.rpc("create_3b_business_for_current_user", {
+      p_company_name: workingName!,
+      p_business_type: "other",
+    });
+    if (created.error || !created.data) return fail("Could not start your business profile. Try again.");
+    businessId = created.data.id;
+    await setActiveBusinessCookie(businessId);
+  }
 
   const upd = await supabase
     .from("businesses")
@@ -181,11 +188,17 @@ export async function saveContact(_prev: ActionState, fd: FormData): Promise<Act
       zip_code: zip,
       business_phone: str(fd, "business_phone"),
       business_email: email,
+      naics_code: naicsCode,
       website_url: website,
-      website_status: website ? "live" : business.website_status,
+      ...(website ? { website_status: "live" } : {}),
     })
-    .eq("id", business.id);
-  if (upd.error) return fail(`Could not save: ${upd.error.message}`);
+    .eq("id", businessId)
+    .select("id")
+    .single();
+  if (upd.error) {
+    if (!business) redirect("/app/setup/contact?error=save");
+    return fail("Could not save your business contact details. Try again.");
+  }
   goNext("contact");
 }
 

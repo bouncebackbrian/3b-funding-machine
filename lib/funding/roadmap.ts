@@ -52,9 +52,7 @@ const GOAL_STEPS: Record<string, Omit<PlannedStep, "sequence" | "dependency_sequ
     { category: "banking", title: "Talk to the bank you already use", description: "Your existing primary bank is usually the most natural place to ask about a business line of credit once you have history there.", action_url: null },
     { category: "banking", title: "Keep 3–6 months of clean statements", description: "Consistent deposits and no overdrafts/NSFs strengthen line-of-credit reviews.", action_url: null },
   ],
-  business_credit: [
-    { category: "credit", title: "Open vendor accounts that report to business bureaus", description: "Use vendor terms or business fuel cards for expenses you already have. Confirm whether positive payment history is reported and pay by the due date.", action_url: "/app/packet#business-credit" },
-  ],
+  business_credit: [],
   real_estate: [
     { category: "application_prep", title: "Gather property details", description: "Address, purchase price or value, intended business use, and any existing debt on the property.", action_url: null },
     { category: "application_prep", title: "Confirm your down payment and reserves", description: "Commercial real estate lenders typically review both the down payment and cash left over after closing.", action_url: null },
@@ -76,8 +74,10 @@ const GOAL_STEPS: Record<string, Omit<PlannedStep, "sequence" | "dependency_sequ
 export function buildRoadmap(state: FundingState, readiness: ReadinessResult): PlannedStep[] {
   const steps: Omit<PlannedStep, "sequence" | "dependency_sequence" | "readiness_gap">[] = [];
 
-  for (const r of readiness.rule_results) {
-    if (r.outcome !== "fail") continue;
+  // The digital presence work is grouped into a single later milestone.
+  const presenceKeys = new Set(["website_present", "business_email_present", "business_email_on_domain"]);
+  const gaps = readiness.rule_results.filter((rule) => rule.outcome === "fail" && GAP_PLAYBOOK[rule.rule_key] && !presenceKeys.has(rule.rule_key));
+  for (const r of gaps) {
     const play = GAP_PLAYBOOK[r.rule_key];
     if (!play) continue;
     steps.push({
@@ -109,6 +109,27 @@ export function buildRoadmap(state: FundingState, readiness: ReadinessResult): P
     },
   );
 
+  steps.push(
+    {
+      category: "credit",
+      title: "Review Net 30 and fuel accounts",
+      description: "Check the terms and payment reporting for accounts that fit real business expenses. Track due dates and pay on time.",
+      action_url: "/app/packet#business-credit",
+    },
+    {
+      category: "credit",
+      title: "Prepare for a business credit card review",
+      description: "After 3B staff verifies Funding Desk eligibility, compare written terms, fees, repayment costs, and any personal guarantee before applying.",
+      action_url: null,
+    },
+    {
+      category: "foundation",
+      title: "Build your logo and business website",
+      description: "Prepare the logo, business domain, email, and website. Use your accurate business name, services, and contact details. Open the dashboard for the 3B Media handoff.",
+      action_url: "/app/dashboard",
+    },
+  );
+
   const goal = state.profile?.funding_goal_type ?? "other";
   steps.push(...(GOAL_STEPS[goal] ?? GOAL_STEPS.other));
 
@@ -129,7 +150,7 @@ export function buildRoadmap(state: FundingState, readiness: ReadinessResult): P
   );
 
   // Gap fixes are independent; everything after the gaps depends on the last gap fix.
-  const gapCount = readiness.rule_results.filter((r) => r.outcome === "fail" && GAP_PLAYBOOK[r.rule_key]).length;
+  const gapCount = gaps.length;
   return steps.map((s, i) => ({
     ...s,
     sequence: i + 1,

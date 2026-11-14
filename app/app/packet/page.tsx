@@ -19,6 +19,11 @@ export default async function BankablePacketPage() {
         <p className="fm-muted">{PACKET_NOTICE}</p>
       </header>
       <section className="fm-card fm-stack">
+        <h2 className="fm-h2">Business contact</h2>
+        <dl>{packet.contact.map(([label, value]) => <div key={label}><dt><strong>{label}</strong></dt><dd className="whitespace-pre-wrap">{value}</dd></div>)}</dl>
+        <Link href="/app/setup/contact">Update business contact</Link>
+      </section>
+      <section className="fm-card fm-stack">
         <h2 className="fm-h2">Funding request</h2>
         <dl>{packet.funding.map(([label, value]) => <div key={label}><dt><strong>{label}</strong></dt><dd className="whitespace-pre-wrap">{value}</dd></div>)}</dl>
         <h3 className="fm-h3">Client-reported financials</h3>

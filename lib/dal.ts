@@ -133,7 +133,7 @@ export const getFundingState = cache(async (business: Business): Promise<Funding
 export async function requireFundingContext() {
   const { user } = await verifySession();
   const business = await getActiveBusiness();
-  if (!business) redirect("/app/setup/business");
+  if (!business) redirect("/app/setup/contact");
   const state = await getFundingState(business);
   return { user, business, state };
 }

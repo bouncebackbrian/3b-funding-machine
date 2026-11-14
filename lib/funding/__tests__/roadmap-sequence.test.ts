@@ -73,12 +73,21 @@ describe("buildRoadmap", () => {
 });
 
 describe("sequenceProgress", () => {
-  it("sends a brand-new business to contact details after the business step", () => {
+  it("starts with business location and phone even for a business with formation data", () => {
     const s = emptyState({ entity_type: "LLC", formation_state: "CA" });
     const p = sequenceProgress(s);
-    expect(p.statuses[0].status).toBe("complete");
+    expect(p.statuses[0].status).toBe("not_started");
     expect(p.nextStep?.key).toBe("contact");
     expect(p.blockingDone).toBe(false);
+  });
+
+  it("moves from location and phone to formation without requiring email or a website", () => {
+    const state = emptyState({
+      address_line1: "1 Main St", city: "Reno", state: "NV", zip_code: "89501", business_phone: "775-555-0100",
+    });
+    const progress = sequenceProgress(state);
+    expect(progress.statuses[0].status).toBe("complete");
+    expect(progress.nextStep?.key).toBe("business");
   });
 
   it("unlocks the review when blocking steps are done even if documents trail", () => {

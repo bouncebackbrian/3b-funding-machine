@@ -1,7 +1,7 @@
 import { allDisclosuresAccepted } from "./disclosures";
 import { isProvided, requirementsForGoal } from "./documents";
 import type { SetupStepKey } from "./readiness";
-import type { FundingState } from "./types";
+import type { Business, FundingState } from "./types";
 
 export interface SetupStep {
   key: SetupStepKey;
@@ -16,8 +16,8 @@ export interface SetupStep {
  * a user can leave and resume anywhere.
  */
 export const SETUP_STEPS: SetupStep[] = [
-  { key: "business", title: "Business foundation", summary: "Legal name, entity, EIN", blocking: true },
-  { key: "contact", title: "Contact & location", summary: "Address, phone, email, website", blocking: true },
+  { key: "contact", title: "Business location & phone", summary: "Physical business address and phone", blocking: true },
+  { key: "business", title: "LLC formation & EIN", summary: "Entity details and federal EIN", blocking: true },
   { key: "owners", title: "Owners & guarantors", summary: "Who owns the business", blocking: true },
   { key: "banking", title: "Banking & revenue", summary: "Business bank account and current numbers", blocking: true },
   { key: "goal", title: "Funding goal", summary: "What you need, how much, and why", blocking: true },
@@ -27,15 +27,19 @@ export const SETUP_STEPS: SetupStep[] = [
 
 export type StepStatus = "complete" | "in_progress" | "not_started";
 
+export function hasBusinessLocation(business: Business) {
+  return [business.address_line1, business.city, business.state, business.zip_code, business.business_phone].every((value) => value?.trim());
+}
+
 export function stepStatus(key: SetupStepKey, s: FundingState): StepStatus {
   const b = s.business;
   switch (key) {
     case "business":
       return b.legal_name && b.entity_type && b.formation_state ? "complete" : "in_progress";
     case "contact": {
-      const fields = [b.address_line1, b.city, b.state, b.zip_code, b.business_phone, b.business_email];
+      const fields = [b.address_line1, b.city, b.state, b.zip_code, b.business_phone];
       const filled = fields.filter((v) => v && v.trim()).length;
-      return filled === fields.length ? "complete" : filled > 0 ? "in_progress" : "not_started";
+      return hasBusinessLocation(b) ? "complete" : filled > 0 ? "in_progress" : "not_started";
     }
     case "owners":
       return s.owners.length > 0 ? "complete" : "not_started";
