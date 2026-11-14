@@ -3,6 +3,7 @@ import { cache } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { FUNDING_UNLOCK_FICO, hasFundingUnlock, MFSN_VIP_ENTITLEMENT } from "@/lib/funding/credit-unlock";
 import type { Business, FundingState, ReadinessRule } from "@/lib/funding/types";
 
 export const ACTIVE_BUSINESS_COOKIE = "3b_active_business_id";
@@ -49,6 +50,21 @@ export const getActiveBusiness = cache(async (): Promise<Business | null> => {
   if (!businesses.length) return null;
   const selected = (await cookies()).get(ACTIVE_BUSINESS_COOKIE)?.value;
   return businesses.find((b) => b.id === selected) ?? businesses[0];
+});
+
+/** Use staff-managed FICO records and service-managed VIP membership. */
+export const getFundingUnlock = cache(async (businessId: string) => {
+  const { user, supabase } = await verifySession();
+  const [credit, vip] = await Promise.all([
+    supabase.from("funding_credit_profiles").select("bureau")
+      .eq("business_id", businessId).eq("user_id", user.id).gte("fico_score", FUNDING_UNLOCK_FICO),
+    supabase.from("entitlements").select("id")
+      .eq("user_id", user.id).is("business_id", null)
+      .eq("plan_sku", MFSN_VIP_ENTITLEMENT).eq("status", "active")
+      .gt("expires_at", new Date().toISOString()).limit(1),
+  ]);
+  if (credit.error || vip.error) throw new Error("Could not check Funding Machine access.");
+  return hasFundingUnlock(credit.data ?? [], Boolean(vip.data?.length));
 });
 
 export const getReadinessRules = cache(async (): Promise<ReadinessRule[]> => {

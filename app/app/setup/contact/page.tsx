@@ -1,4 +1,5 @@
 import { ActionForm, Field, SubmitButton } from "@/components/form";
+import Link from "next/link";
 import { MediaGroupCta } from "@/components/media-group-cta";
 import { StepHeader } from "@/components/step-header";
 import { checkAlignment } from "@/lib/funding/alignment";
@@ -33,6 +34,11 @@ export default async function ContactStep({ searchParams }: { searchParams: Prom
         step="contact"
         intro="Enter the physical business address and phone you plan to use. You can add business email and a website when they are available."
       />
+      <section className="fm-card fm-stack">
+        <h2 className="fm-h3">Still working out your business idea?</h2>
+        <p>Describe what you’ll sell, who will buy it, and where you’ll operate. Use that primary activity to research your NAICS code before filing. You can work through these decisions while building personal credit.</p>
+        <Link href="/llc-funding">Check what you’ll need to prepare</Link>
+      </section>
       {params.error === "save" && <p role="alert">Your profile was created. Re-enter your contact details to finish this step.</p>}
       <ActionForm action={saveContact}>
         {creatingNew && <input type="hidden" name="create_new" value="1" />}

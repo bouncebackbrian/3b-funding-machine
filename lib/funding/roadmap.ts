@@ -108,7 +108,7 @@ export function buildRoadmap(state: FundingState, readiness: ReadinessResult): P
     {
       category: "credit",
       title: "Review personal credit through 3B Credit Builders",
-      description: "Choose Basic or VIP Credit Builder, or use your existing MyFreeScoreNow membership. Upload your current report PDF in 3B Credit Builders. Funding Desk staff separately verifies three-bureau FICO eligibility.",
+      description: "Use your existing MyFreeScoreNow membership or choose Basic to start or VIP to work toward the packet unlock. Upload your current report PDF in 3B Credit Builders. 3B verifies active VIP and 680+ FICO at every bureau for the unlock.",
       action_url: "/app/setup/owners#personal-credit",
     },
   );
@@ -138,14 +138,14 @@ export function buildRoadmap(state: FundingState, readiness: ReadinessResult): P
     category: "foundation",
     title: "Check Google and 411 business listings",
     description: "For an eligible business, claim or verify its Google Business Profile. Ask the phone provider whether it offers a 411 listing. Match the public name, phone, website, and storefront address or service area to the Company page.",
-    action_url: "/app/packet#public-listings",
+    action_url: "/app/setup/contact",
   });
 
   steps.push({
     category: "application_prep",
     title: "Document business assets and repayment capacity",
     description: "List available cash, owned assets, and liens. Compare operating cash flow with existing debt and the new payment. Check small business-only financing offers first.",
-    action_url: "/app/packet#capital-preparation",
+    action_url: "/app/setup/banking",
   });
 
   if (isTruckingBusiness(state)) {
@@ -153,7 +153,7 @@ export function buildRoadmap(state: FundingState, readiness: ReadinessResult): P
       category: "banking",
       title: "Set up trucking expenses and reserves",
       description: "Track operating expenses in Fleet Commander or Expense Tracker. Upload a dated summary to the funding packet and keep a separate repair reserve.",
-      action_url: "/app/packet#trucking-preparation",
+      action_url: "/app/setup/documents#trucking_expense_summary",
     });
   }
 
@@ -162,7 +162,7 @@ export function buildRoadmap(state: FundingState, readiness: ReadinessResult): P
       category: "application_prep",
       title: "Review business credit and compare funding paths",
       description: "Review current credit and repayment evidence. Compare the original request, asset-backed options, and a smaller phase when useful. Check business-only terms first.",
-      action_url: "/app/packet#funding-goal-match",
+      action_url: "/app/setup/goal",
     });
   }
 
