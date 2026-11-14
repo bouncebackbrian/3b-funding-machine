@@ -157,6 +157,15 @@ export function buildRoadmap(state: FundingState, readiness: ReadinessResult): P
     });
   }
 
+  if (state.profile?.funding_goal_type && state.profile.target_amount) {
+    steps.push({
+      category: "application_prep",
+      title: "Plan a smaller first financing request",
+      description: "Price the smallest useful phase of your original goal. Check business-only terms, repayment from operating cash flow, and business credit reporting before adding debt.",
+      action_url: "/app/packet#funding-goal-match",
+    });
+  }
+
   const goal = state.profile?.funding_goal_type ?? "other";
   steps.push(...(GOAL_STEPS[goal] ?? GOAL_STEPS.other));
 

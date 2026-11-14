@@ -136,6 +136,7 @@ export function renderPacketSummary(packet: BankablePacket, evidence: string[] =
       `3B readiness score: ${packet.goalFit.score}/100`,
       packet.goalFit.readinessAction,
       packet.goalFit.evidence,
+      ...packet.goalFit.stages.map(({ title, detail }) => `- ${title}: ${detail}`),
       "The score measures preparation. Verify a no-personal-guarantee offer and confirm affordable payments before estimating a financeable amount.",
     ] : []),
     "", "CLIENT-REPORTED FINANCIALS", ...packet.finances.map(([label, value]) => `${label}: ${value}`),
