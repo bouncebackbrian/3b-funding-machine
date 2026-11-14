@@ -6,11 +6,27 @@ import { domainHint, mediaNeeds } from "@/lib/funding/media-group";
 import { getActiveBusiness } from "@/lib/dal";
 import { saveContact } from "../../actions";
 
+function iPostalAffiliateUrl(): string | null {
+  const configured = process.env.THREEB_IPOSTAL1_AFFILIATE_URL;
+  if (!configured) return null;
+  try {
+    const url = new URL(configured);
+    if (url.protocol === "https:" && ["ipostal1.com", "www.ipostal1.com"].includes(url.hostname) && !url.username && !url.password && !url.port) {
+      return url.href;
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
+
 export default async function ContactStep({ searchParams }: { searchParams: Promise<{ new?: string; error?: string }> }) {
   const params = await searchParams;
   const creatingNew = params.new === "1";
   const active = await getActiveBusiness();
   const b = creatingNew ? null : active;
+  const mailboxUrl = iPostalAffiliateUrl();
+  const webServices = b ? mediaNeeds(checkAlignment(b)).filter((service) => service !== "logo") : null;
   return (
     <>
       <StepHeader
@@ -41,8 +57,21 @@ export default async function ContactStep({ searchParams }: { searchParams: Prom
         </section>
         <SubmitButton>Save and continue</SubmitButton>
       </ActionForm>
-      {/* Only when there's a web gap to fix here; the logo-only offer lives on the dashboard. */}
-      {b && mediaNeeds(checkAlignment(b)).some((n) => n !== "logo") && <MediaGroupCta needs={b && mediaNeeds(checkAlignment(b))} domain={domainHint(b)} />}
+      <section className="fm-card" aria-labelledby="business-mail-heading">
+        <h2 id="business-mail-heading" className="fm-h3">Need a separate business mailing address?</h2>
+        <p className="fm-muted">iPostal1 offers virtual mailboxes. Enter your actual physical business location above. Check with the bank or filing office before using a separate mailing address on its forms.</p>
+        {mailboxUrl && (
+          <>
+            <p className="fm-muted fm-small">3B may earn a commission if you sign up through this link.</p>
+            <a href={mailboxUrl} target="_blank" rel="noopener noreferrer sponsored" className="fm-btn">Explore iPostal1 mailboxes</a>
+          </>
+        )}
+      </section>
+      {b && webServices ? (
+        <MediaGroupCta needs={webServices} domain={domainHint(b)} />
+      ) : (
+        <MediaGroupCta needs={["domain", "website", "email"]} />
+      )}
     </>
   );
 }

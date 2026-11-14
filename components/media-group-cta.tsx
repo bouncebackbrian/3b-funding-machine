@@ -23,6 +23,11 @@ export function MediaGroupCta({ needs, domain = null }: { needs: MediaService[];
           </li>
         ))}
       </ul>
+      {needs.includes("domain") && (
+        <p className="fm-muted fm-small">
+          3B Media Group offers domain registration through its Dynadot reseller account. You can review registration and renewal pricing before ordering.
+        </p>
+      )}
       {needs.includes("domain") && domain && !domain.existing && (
         <p className="fm-muted fm-small">{domain.domain} is just an example. 3B Media Group checks what&apos;s available and registers it in your business&apos;s name.</p>
       )}
