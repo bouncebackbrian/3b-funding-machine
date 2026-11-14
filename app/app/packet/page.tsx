@@ -2,14 +2,33 @@ import { AmountReview } from "./amount-review";
 import { CREDIT_REVIEW } from "@/lib/funding/goal-fit";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { getReadinessRules, requireFundingContext } from "@/lib/dal";
+import { getFundingUnlock, getReadinessRules, requireFundingContext } from "@/lib/dal";
+import { FUNDING_UNLOCK_FICO } from "@/lib/funding/credit-unlock";
 import { buildPacket, BUSINESS_CREDIT_EXAMPLES, BUSINESS_CREDIT_GUIDANCE, CASH_FLOW_GUIDANCE, PACKET_NOTICE, PACKET_TITLE, PUBLIC_LISTING_GUIDANCE } from "@/lib/funding/packet";
 import { AFFILIATE_DISCLOSURE } from "@/lib/funding/net30";
 import { DownloadDocuments } from "./download-documents";
 import { evaluateReadiness } from "@/lib/funding/readiness";
 
 export default async function BankablePacketPage() {
-  const { state } = await requireFundingContext();
+  const { business, state } = await requireFundingContext();
+  if (!await getFundingUnlock(business.id)) {
+    return (
+      <section className="fm-card fm-stack">
+        <h1 className="fm-h1">Unlock the Funding Machine packet</h1>
+        <p>3B must verify an active MyFreeScoreNow VIP membership and a FICO score of at least {FUNDING_UNLOCK_FICO} at Experian, Equifax, and TransUnion.</p>
+        <p>Already on VIP and have your three FICO scores? Contact 3B Credit Builders to arrange a secure review.</p>
+        <a href="mailto:credit@bouncebackbrian.com">Ask 3B Credit Builders for a verification review</a>
+        <p>Keep preparing your business while you build personal credit. Your saved setup and documents carry into the packet when it unlocks.</p>
+        <ul className="fm-mini">
+          <li><Link href="/llc-funding">Explore a business idea and what it would need</Link></li>
+          <li><Link href="/app/setup/contact">Set up your location and phone and research NAICS codes</Link></li>
+          <li><Link href="/app/setup/business">Record your LLC and EIN details</Link></li>
+          <li><Link href="/app/setup/owners#personal-credit">Review personal credit through Credit Builders</Link></li>
+          <li><Link href="/app/roadmap">Continue your preparation roadmap</Link></li>
+        </ul>
+      </section>
+    );
+  }
   if (!state.readiness) redirect("/app/setup/review");
 
   const now = new Date();

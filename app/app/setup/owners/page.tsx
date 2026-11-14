@@ -1,6 +1,7 @@
 import { ActionForm, Field, Select, SubmitButton } from "@/components/form";
 import { StepHeader } from "@/components/step-header";
 import { requireFundingContext } from "@/lib/dal";
+import { FUNDING_UNLOCK_FICO } from "@/lib/funding/credit-unlock";
 import { addOwner, continueFromOwners, removeOwner } from "../../actions";
 
 export default async function OwnersStep({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
@@ -18,8 +19,8 @@ export default async function OwnersStep({ searchParams }: { searchParams: Promi
       <section className="fm-card fm-stack" id="personal-credit">
         <h2 className="fm-h3">Review personal credit through 3B Credit Builders</h2>
         <ul className="fm-mini">
-          <li><strong>Basic Credit Builder</strong> · Start your personal credit review.</li>
-          <li><strong>VIP Credit Builder</strong> · Use Bounce Back Brian support for questions about your credit report, Funding Machine setup, and readiness packet. Response times vary.</li>
+          <li><strong>Basic Credit Builder</strong> · Start your personal credit review and prepare your business.</li>
+          <li><strong>VIP Credit Builder</strong> · Active MyFreeScoreNow VIP membership is required to unlock the full Funding Machine packet. Use Bounce Back Brian support for questions about your report and funding preparation.</li>
           <li><strong>Already a member?</strong> Use your current MyFreeScoreNow membership.</li>
         </ul>
         <div className="flex flex-wrap gap-3">
@@ -28,7 +29,7 @@ export default async function OwnersStep({ searchParams }: { searchParams: Promi
         </div>
         <p>Confirm which bureaus your plan covers. Download your current report PDF from MyFreeScoreNow, upload it in 3B Credit Builders, then return here to continue setup.</p>
         <p className="fm-muted fm-small">
-          MyFreeScoreNow provides consumer credit reports and educational scores. Funding Desk staff separately verifies 3B Credit Builders completion and a FICO score of at least 700 from each of the three bureaus. Keep personal reports in Credit Builders.
+          MyFreeScoreNow provides consumer credit reports and educational scores. 3B verifies VIP membership and a FICO score of at least {FUNDING_UNLOCK_FICO} at every bureau for the packet unlock. Funding Desk application support has a separate review, including Credit Builders completion and 700+ FICO at every bureau. Keep personal reports in Credit Builders.
         </p>
         <p className="fm-muted fm-small">MyFreeScoreNow bills for its membership. 3B may earn a commission on referrals.</p>
       </section>

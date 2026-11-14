@@ -4,7 +4,7 @@ import { MediaGroupCta } from "@/components/media-group-cta";
 import { ScoreBadge } from "@/components/readiness-view";
 import { checkAlignment } from "@/lib/funding/alignment";
 import { domainHint, mediaNeeds } from "@/lib/funding/media-group";
-import { requireFundingContext } from "@/lib/dal";
+import { getFundingUnlock, requireFundingContext } from "@/lib/dal";
 import type { ReadinessStatus } from "@/lib/funding/readiness";
 import { sequenceProgress } from "@/lib/funding/sequence";
 import { FUNDING_GOAL_TYPES } from "@/lib/funding/types";
@@ -14,6 +14,7 @@ const money = (n: number | null | undefined) =>
 
 export default async function Dashboard() {
   const { business, state } = await requireFundingContext();
+  const unlocked = await getFundingUnlock(business.id);
   const progress = sequenceProgress(state);
   const alignment = checkAlignment(business);
   const goal = FUNDING_GOAL_TYPES.find((g) => g.value === state.profile?.funding_goal_type)?.label;
@@ -73,7 +74,7 @@ export default async function Dashboard() {
         <section className="fm-card">
           <h2 className="fm-h3">Funding readiness</h2>
           <ScoreBadge score={Number(state.readiness.overall_score)} status={state.readiness.status as ReadinessStatus} />
-          <Link href="/app/packet" className="fm-btn fm-btn-ghost">Open readiness packet</Link>
+          <Link href="/app/packet" className="fm-btn fm-btn-ghost">{unlocked ? "Open readiness packet" : "View packet unlock requirements"}</Link>
           <p className="fm-muted fm-small">Last scored {new Date(state.readiness.computed_at).toLocaleDateString()}.</p>
         </section>
       )}
