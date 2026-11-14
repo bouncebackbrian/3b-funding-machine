@@ -1,5 +1,6 @@
+import { matchFundingGoal } from "./goal-fit";
 import { CAPITAL_PREP, truckingPreparation } from "./capital-prep";
-import { isProvided, requirementsForGoal } from "./documents";
+import { isProvided, requirementsForFunding } from "./documents";
 import type { ReadinessResult } from "./readiness";
 import { FUNDING_GOAL_TYPES, type FundingState } from "./types";
 
@@ -43,7 +44,7 @@ const outcomes = {
 export function buildPacket(state: FundingState, readiness: ReadinessResult, now: Date) {
   const { business, profile, snapshot, equipment } = state;
   const goal = FUNDING_GOAL_TYPES.find((item) => item.value === profile?.funding_goal_type)?.label;
-  const documents = requirementsForGoal(profile?.funding_goal_type).map((requirement) => {
+  const documents = requirementsForFunding(state).map((requirement) => {
     const record = state.documents.find((document) => document.document_type === requirement.documentType);
     const path = record?.storage_path;
     const prefix = `${business.id}/${requirement.documentType}/`;
@@ -90,11 +91,14 @@ export function buildPacket(state: FundingState, readiness: ReadinessResult, now
         ? [["Equipment", [equipment.equipment_year, equipment.equipment_subtype].filter(Boolean).join(" ")], ["Estimated equipment price", money(equipment.estimated_purchase_price)]]
         : []),
     ],
+    goalFit: matchFundingGoal(profile, readiness),
     finances: [
       ["Figures as of", snapshot?.as_of_date ?? "Not provided"],
       ["Monthly business revenue", money(snapshot?.monthly_revenue)],
       ["Annual business revenue", money(snapshot?.annual_revenue)],
       ["Existing business debt", money(snapshot?.existing_business_debt)],
+      ["Business checking balance", money(snapshot?.checking_balance)],
+      ["Other unrestricted business cash on hand", money(snapshot?.cash_on_hand)],
     ],
     checks: readiness.rule_results.map((rule) => ({
       label: rule.label,
@@ -125,6 +129,15 @@ export function renderPacketSummary(packet: BankablePacket, evidence: string[] =
     PACKET_TITLE, packet.businessName, packet.date, PACKET_NOTICE,
     "", "BUSINESS CONTACT", ...packet.contact.map(([label, value]) => `${label}: ${value}`),
     "", "FUNDING REQUEST", ...packet.funding.map(([label, value]) => `${label}: ${value}`),
+    ...(packet.goalFit ? [
+      "", "FINANCING OPTIONS FOR THE REQUEST",
+      packet.goalFit.type,
+      `Original requested amount: ${money(packet.goalFit.amount)}`,
+      `3B readiness score: ${packet.goalFit.score}/100`,
+      packet.goalFit.readinessAction,
+      packet.goalFit.evidence,
+      "The score measures preparation. Verify a no-personal-guarantee offer and confirm affordable payments before estimating a financeable amount.",
+    ] : []),
     "", "CLIENT-REPORTED FINANCIALS", ...packet.finances.map(([label, value]) => `${label}: ${value}`),
     "", "BANKABILITY CHECKLIST", "On file means recorded in the portal. 3B Funding Desk eligibility requires a separate evidence review.",
     ...packet.checks.map(({ label, status }) => `- ${label} — ${status}`),

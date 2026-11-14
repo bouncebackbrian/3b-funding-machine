@@ -43,6 +43,7 @@ export default async function BankingStep() {
           <Field name="existing_business_debt" label="Existing business debt ($)" inputMode="decimal" defaultValue={s?.existing_business_debt} />
           <Field name="nsf_count_90d" label="Overdrafts / NSFs in last 90 days" inputMode="numeric" defaultValue={s?.nsf_count_90d} />
         </div>
+        <Field name="cash_on_hand" label="Other money on hand ($)" inputMode="decimal" defaultValue={s?.cash_on_hand} hint="Unrestricted business cash outside the checking balance above. Leave blank if unknown. List owner funds and pledged deposits separately in your asset register." />
         <SubmitButton>Save and continue</SubmitButton>
       </ActionForm>
     </>

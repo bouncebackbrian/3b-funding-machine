@@ -1,5 +1,5 @@
 import { allDisclosuresAccepted } from "./disclosures";
-import { isProvided, requirementsForGoal } from "./documents";
+import { isProvided, requirementsForFunding } from "./documents";
 import type { SetupStepKey } from "./readiness";
 import type { Business, FundingState } from "./types";
 
@@ -52,7 +52,7 @@ export function stepStatus(key: SetupStepKey, s: FundingState): StepStatus {
     case "disclosures":
       return allDisclosuresAccepted(s.consents) ? "complete" : s.consents.length > 0 ? "in_progress" : "not_started";
     case "documents": {
-      const required = requirementsForGoal(s.profile?.funding_goal_type).filter((r) => r.classification === "required");
+      const required = requirementsForFunding(s).filter((r) => r.classification === "required");
       const provided = required.filter((r) => isProvided(s.documents.find((d) => d.document_type === r.documentType)));
       return provided.length === required.length ? "complete" : provided.length > 0 ? "in_progress" : "not_started";
     }

@@ -1,4 +1,4 @@
-import { truckingPreparation } from "./capital-prep";
+import { isTruckingBusiness } from "./capital-prep";
 import type { ReadinessResult } from "./readiness";
 import type { FundingState } from "./types";
 
@@ -148,11 +148,11 @@ export function buildRoadmap(state: FundingState, readiness: ReadinessResult): P
     action_url: "/app/packet#capital-preparation",
   });
 
-  if (truckingPreparation(state).length > 0) {
+  if (isTruckingBusiness(state)) {
     steps.push({
       category: "banking",
       title: "Set up trucking expenses and reserves",
-      description: "Review business cellular service, vehicle expenses, commercial insurance, fuel cards, and the repair reserve. The packet also includes an optional review of an existing IUL policy.",
+      description: "Track operating expenses in Fleet Commander or Expense Tracker. Upload a dated summary to the funding packet and keep a separate repair reserve.",
       action_url: "/app/packet#trucking-preparation",
     });
   }
