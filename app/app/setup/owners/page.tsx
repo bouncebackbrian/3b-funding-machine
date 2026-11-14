@@ -12,8 +12,18 @@ export default async function OwnersStep({ searchParams }: { searchParams: Promi
     <>
       <StepHeader
         step="owners"
-        intro="Most business funding includes a personal guarantee from owners of 20% or more. List everyone who owns part of the business."
+        intro="List everyone who owns part of the business. Review any personal guarantee in the lender’s written terms."
       />
+
+      <section className="fm-card fm-stack" id="personal-credit">
+        <h2 className="fm-h3">Review personal credit through 3B Credit Builders</h2>
+        <p>Start with the MyFreeScoreNow Basic plan or use your existing membership. Confirm which bureaus your plan covers. Download your current report PDF from MyFreeScoreNow and upload it in 3B Credit Builders.</p>
+        <a href="https://credit.bouncebackbrian.com/membership/choose">Open 3B Credit Builders</a>
+        <p className="fm-muted fm-small">
+          MyFreeScoreNow provides consumer credit reports and educational scores. Funding Desk staff separately verifies 3B Credit Builders completion and a FICO score of at least 700 from each of the three bureaus. Keep personal reports in Credit Builders.
+        </p>
+        <p className="fm-muted fm-small">MyFreeScoreNow bills for its membership. 3B may earn a commission on referrals.</p>
+      </section>
 
       {error === "owner_required" && <p className="fm-alert fm-alert-error">Add at least one owner to continue.</p>}
 

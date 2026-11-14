@@ -107,9 +107,9 @@ export function buildRoadmap(state: FundingState, readiness: ReadinessResult): P
   steps.push(
     {
       category: "credit",
-      title: "Review your personal credit reports",
-      description: "Most small-business funding involves a personal guarantee. Pull your free reports from all three bureaus so you know what lenders will see — for funding preparation, not credit repair.",
-      action_url: "https://www.annualcreditreport.com",
+      title: "Review personal credit through 3B Credit Builders",
+      description: "Start with MyFreeScoreNow Basic or use your existing membership. Upload the provider’s report PDF in 3B Credit Builders. Funding Desk staff separately verifies three-bureau FICO eligibility.",
+      action_url: "/app/setup/owners#personal-credit",
     },
   );
 
