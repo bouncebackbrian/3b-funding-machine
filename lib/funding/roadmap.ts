@@ -34,7 +34,6 @@ const GAP_PLAYBOOK: Record<string, { category: PlannedStep["category"]; title: s
   compliance_certifications_accepted: { category: "compliance", title: "Accept the required certifications", how: "Required before 3B prepares anything for a lender.", url: "/app/setup/disclosures" },
   business_email_on_domain: { category: "foundation", title: "Move to an email on your own domain", how: "Set up you@yourbusiness.com on the same domain as your website — lenders and vendors read a personal inbox as a newer, riskier business.", url: "/app/setup/contact" },
   identity_aligned: { category: "foundation", title: "Fix mismatches in your business identity", how: "Your name, email domain, website, and phone should match exactly everywhere. Your dashboard shows each mismatch and how to fix it.", url: "/app/dashboard" },
-  duns_on_file: { category: "credit", title: "Get a D-U-N-S number for your business", how: "Free from Dun & Bradstreet — it opens your business credit file. Register with the exact legal name, address, and phone in your profile, then add the number to your business step.", url: "https://www.dnb.com/duns/get-a-duns.html" },
   entity_documents_complete: { category: "documentation", title: "Upload formation and EIN documents", how: "Articles of Organization/Incorporation and your IRS EIN letter.", url: "/app/setup/documents" },
 };
 
@@ -75,8 +74,8 @@ export function buildRoadmap(state: FundingState, readiness: ReadinessResult): P
   const steps: Omit<PlannedStep, "sequence" | "dependency_sequence" | "readiness_gap">[] = [];
 
   // The digital presence work is grouped into a single later milestone.
-  const presenceKeys = new Set(["website_present", "business_email_present", "business_email_on_domain"]);
-  const gaps = readiness.rule_results.filter((rule) => rule.outcome === "fail" && GAP_PLAYBOOK[rule.rule_key] && !presenceKeys.has(rule.rule_key));
+  const laterKeys = new Set(["website_present", "business_email_present", "business_email_on_domain", "duns_on_file"]);
+  const gaps = readiness.rule_results.filter((rule) => rule.outcome === "fail" && GAP_PLAYBOOK[rule.rule_key] && !laterKeys.has(rule.rule_key));
   for (const r of gaps) {
     const play = GAP_PLAYBOOK[r.rule_key];
     if (!play) continue;
@@ -88,10 +87,14 @@ export function buildRoadmap(state: FundingState, readiness: ReadinessResult): P
     });
   }
 
-  // D-U-N-S: once the duns_on_file rule is live it arrives as a gap fix above.
-  // Until then (or if it's turned off), keep the standing step unless a number is already on file.
-  const dunsRuleScored = readiness.rule_results.some((r) => r.rule_key === "duns_on_file");
-  if (!dunsRuleScored && !state.business.duns_number?.trim()) {
+  steps.push({
+    category: "banking",
+    title: "Build a record of operating cash flow",
+    description: "Deposit customer payments and pay real business expenses through business checking. Reconcile monthly, separate transfers and financing deposits from revenue, and document cash available for repayment.",
+    action_url: "/app/setup/banking",
+  });
+
+  if (!state.business.duns_number?.trim()) {
     steps.push({
       category: "credit",
       title: "Get a D-U-N-S number for your business",
