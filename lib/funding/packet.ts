@@ -1,3 +1,4 @@
+import { PRINTING_VENDORS } from "./net30";
 import { CREDIT_REVIEW, matchFundingGoal } from "./goal-fit";
 import { CAPITAL_PREP, truckingPreparation } from "./capital-prep";
 import { isProvided, requirementsForFunding } from "./documents";
@@ -8,6 +9,7 @@ export const PACKET_TITLE = "3B Funding Machine Bankable Readiness Packet";
 export const PACKET_NOTICE = "This packet organizes your financing request and supporting evidence. Confirm the lender’s current requirements before submitting. The lender makes the credit decision.";
 
 export const BUSINESS_CREDIT_EXAMPLES = [
+  ...PRINTING_VENDORS,
   {
     name: "Grainger",
     use: "Tools, maintenance, and safety supplies. Review Net 30 terms for established credit accounts.",
