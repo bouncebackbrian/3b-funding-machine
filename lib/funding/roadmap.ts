@@ -108,7 +108,7 @@ export function buildRoadmap(state: FundingState, readiness: ReadinessResult): P
     {
       category: "credit",
       title: "Review personal credit through 3B Credit Builders",
-      description: "Start with MyFreeScoreNow Basic or use your existing membership. Upload the provider’s report PDF in 3B Credit Builders. Funding Desk staff separately verifies three-bureau FICO eligibility.",
+      description: "Choose Basic or VIP Credit Builder, or use your existing MyFreeScoreNow membership. Upload your current report PDF in 3B Credit Builders. Funding Desk staff separately verifies three-bureau FICO eligibility.",
       action_url: "/app/setup/owners#personal-credit",
     },
   );

@@ -17,8 +17,16 @@ export default async function OwnersStep({ searchParams }: { searchParams: Promi
 
       <section className="fm-card fm-stack" id="personal-credit">
         <h2 className="fm-h3">Review personal credit through 3B Credit Builders</h2>
-        <p>Start with the MyFreeScoreNow Basic plan or use your existing membership. Confirm which bureaus your plan covers. Download your current report PDF from MyFreeScoreNow and upload it in 3B Credit Builders.</p>
-        <a href="https://credit.bouncebackbrian.com/membership/choose">Open 3B Credit Builders</a>
+        <ul className="fm-mini">
+          <li><strong>Basic Credit Builder</strong> · Start your personal credit review.</li>
+          <li><strong>VIP Credit Builder</strong> · Use Bounce Back Brian support for questions about your credit report, Funding Machine setup, and readiness packet. Response times vary.</li>
+          <li><strong>Already a member?</strong> Use your current MyFreeScoreNow membership.</li>
+        </ul>
+        <div className="flex flex-wrap gap-3">
+          <a href="https://credit.bouncebackbrian.com/membership/choose">Compare Basic and VIP</a>
+          <a href="https://credit.bouncebackbrian.com/login">Sign in to Credit Builders</a>
+        </div>
+        <p>Confirm which bureaus your plan covers. Download your current report PDF from MyFreeScoreNow, upload it in 3B Credit Builders, then return here to continue setup.</p>
         <p className="fm-muted fm-small">
           MyFreeScoreNow provides consumer credit reports and educational scores. Funding Desk staff separately verifies 3B Credit Builders completion and a FICO score of at least 700 from each of the three bureaus. Keep personal reports in Credit Builders.
         </p>
