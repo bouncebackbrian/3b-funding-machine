@@ -1,3 +1,4 @@
+import { CAPITAL_PREP, truckingPreparation } from "./capital-prep";
 import { isProvided, requirementsForGoal } from "./documents";
 import type { ReadinessResult } from "./readiness";
 import { FUNDING_GOAL_TYPES, type FundingState } from "./types";
@@ -101,6 +102,8 @@ export function buildPacket(state: FundingState, readiness: ReadinessResult, now
       fix: rule.fix_step,
     })),
     documents,
+    capitalPreparation: CAPITAL_PREP,
+    truckingPreparation: truckingPreparation(state),
     lenderChecklist: [
       "Compare the business address and phone in this packet with the supporting documents that show them. Explain legitimate differences, such as a separate registered-agent or mailing address.",
       "Share the public Company page with the banker so they can review the business name, services, location, phone, and email. Send financials and supporting documents through the lender’s secure channel.",
@@ -128,6 +131,8 @@ export function renderPacketSummary(packet: BankablePacket, evidence: string[] =
     "", "DOCUMENT CHECKLIST", ...packet.documents.map(({ label, status, classification }) => `- ${label} — ${status} (${classification})`),
     ...(evidence.length ? ["", "ATTACHMENTS", ...evidence] : []),
     "", "CONFIRM WITH YOUR LENDER", ...packet.lenderChecklist.map((item) => `- ${item}`),
+    "", "ASSETS AND REPAYMENT CAPACITY", ...packet.capitalPreparation.map((item) => `- ${item}`),
+    ...(packet.truckingPreparation.length ? ["", "TRUCKING OPERATING CHECKLIST", ...packet.truckingPreparation.map((item) => `- ${item}`)] : []),
     "", "PUBLIC BUSINESS LISTINGS", PUBLIC_LISTING_GUIDANCE,
     "", "BUSINESS CASH FLOW", CASH_FLOW_GUIDANCE,
     "", "BUSINESS PAYMENT HISTORY", BUSINESS_CREDIT_GUIDANCE,

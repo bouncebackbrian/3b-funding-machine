@@ -39,3 +39,16 @@ it("includes the business contact details and NAICS code in the exported packet"
   expect(summary).toContain("https://example.com");
   expect(summary).toContain("492110");
 });
+
+it("exports trucking guidance for a trucking business and keeps the asset guidance general", () => {
+  const now = new Date("2026-11-14T12:00:00Z");
+  const state = completeState();
+  Object.assign(state.business, { business_type: "other", naics_code: "722515" });
+  state.equipment = null;
+  const packetForState = () => renderPacketSummary(buildPacket(state, evaluateReadiness(state, LIVE_RULES, now), now));
+  expect(packetForState()).toContain("ASSETS AND REPAYMENT CAPACITY");
+  expect(packetForState()).not.toContain("TRUCKING OPERATING CHECKLIST");
+  state.business.naics_code = "484121";
+  expect(packetForState()).toContain("TRUCKING OPERATING CHECKLIST");
+  expect(packetForState()).toContain("available loan value");
+});

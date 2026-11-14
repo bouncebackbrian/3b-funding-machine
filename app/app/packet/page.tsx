@@ -53,6 +53,17 @@ export default async function BankablePacketPage() {
         <h2 className="fm-h2">Final bank handoff</h2>
         <ul className="fm-mini">{packet.lenderChecklist.map((item) => <li key={item}>{item}</li>)}</ul>
       </section>
+      <section className="fm-card fm-stack" id="capital-preparation">
+        <h2 className="fm-h2">Assets and repayment capacity</h2>
+        <ul className="fm-mini">{packet.capitalPreparation.map((item) => <li key={item}>{item}</li>)}</ul>
+      </section>
+      {packet.truckingPreparation.length > 0 && (
+        <section className="fm-card fm-stack" id="trucking-preparation">
+          <h2 className="fm-h2">Trucking operating checklist</h2>
+          <ul className="fm-mini">{packet.truckingPreparation.map((item) => <li key={item}>{item}</li>)}</ul>
+          <a href="https://www.fmcsa.dot.gov/registration/insurance-filing-requirements">Check FMCSA insurance filing requirements</a>
+        </section>
+      )}
       <section className="fm-card fm-stack" id="public-listings">
         <h2 className="fm-h2">Google and 411 business listings</h2>
         <p>{PUBLIC_LISTING_GUIDANCE}</p>
