@@ -20,9 +20,9 @@ export const SETUP_STEPS: SetupStep[] = [
   { key: "business", title: "LLC formation & EIN", summary: "Entity details and federal EIN", blocking: true },
   { key: "owners", title: "Owners & guarantors", summary: "Who owns the business", blocking: true },
   { key: "banking", title: "Banking & revenue", summary: "Business bank account and current numbers", blocking: true },
-  { key: "goal", title: "Funding goal", summary: "What you need, how much, and why", blocking: true },
-  { key: "disclosures", title: "Disclosures", summary: "Required certifications", blocking: true },
-  { key: "documents", title: "Documents", summary: "Upload what lenders ask for", blocking: false },
+  { key: "goal", title: "Funding worksheet", summary: "What you need, how much, and why", blocking: true },
+  { key: "disclosures", title: "Sign disclosures", summary: "Read, acknowledge, and electronically sign", blocking: true },
+  { key: "documents", title: "Business Vault", summary: "Upload and update supporting documents", blocking: false },
 ];
 
 export type StepStatus = "complete" | "in_progress" | "not_started";

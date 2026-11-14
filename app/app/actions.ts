@@ -11,7 +11,7 @@ import {
   getUserBusinesses,
   verifySession,
 } from "@/lib/dal";
-import { DISCLOSURES } from "@/lib/funding/disclosures";
+import { allDisclosuresAccepted, DISCLOSURES } from "@/lib/funding/disclosures";
 import { ALLOWED_UPLOAD_TYPES, DOCUMENT_REQUIREMENTS, MAX_UPLOAD_BYTES } from "@/lib/funding/documents";
 import { getOrCreateFundingProfile, runReadinessAndRoadmap } from "@/lib/funding/persist";
 import { hasBusinessLocation, nextStepKey } from "@/lib/funding/sequence";
@@ -362,9 +362,14 @@ export async function saveGoal(_prev: ActionState, fd: FormData): Promise<Action
 // ── Step 6: disclosures ─────────────────────────────────────────────────────
 export async function acceptDisclosures(_prev: ActionState, fd: FormData): Promise<ActionState> {
   const { user, supabase, business } = await requireActiveBusiness();
+  if (allDisclosuresAccepted((await getFundingState(business)).consents)) goNext("disclosures");
   const missing = DISCLOSURES.filter((d) => fd.get(`accept_${d.type}`) !== "on");
   if (missing.length) {
     return fail("All certifications are required to continue.", Object.fromEntries(missing.map((d) => [`accept_${d.type}`, "Required."])));
+  }
+  const signerName = str(fd, "signer_name");
+  if (!signerName || signerName.length > 120 || fd.get("sign_electronically") !== "on") {
+    return fail("Type your full legal name and confirm you intend to sign electronically.");
   }
   const res = await supabase.from("funding_consents").upsert(
     DISCLOSURES.map((d) => ({
@@ -373,10 +378,12 @@ export async function acceptDisclosures(_prev: ActionState, fd: FormData): Promi
       disclosure_type: d.type,
       disclosure_version: d.version,
       accepted: true,
+      signer_name: signerName,
     })),
     { onConflict: "business_id,disclosure_type,disclosure_version", ignoreDuplicates: true },
   );
   if (res.error) return fail(`Could not record your acceptance: ${res.error.message}`);
+  revalidatePath("/app", "layout");
   goNext("disclosures");
 }
 
@@ -481,6 +488,7 @@ export async function restoreDocumentApplicability(fd: FormData) {
 export async function runReview(): Promise<ActionState> {
   const { user, supabase, business } = await requireActiveBusiness();
   const [state, rules] = await Promise.all([getFundingState(business), getReadinessRules()]);
+  if (!allDisclosuresAccepted(state.consents)) return fail("Sign and acknowledge the current disclosures before running your review.");
   try {
     await runReadinessAndRoadmap(supabase, state, rules, user.id, new Date());
   } catch (e) {

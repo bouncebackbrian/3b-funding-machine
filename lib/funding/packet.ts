@@ -1,4 +1,5 @@
 import { AFFILIATE_DISCLOSURE, PRINTING_VENDORS, type BusinessCreditVendor } from "./net30";
+import { DISCLOSURES } from "./disclosures";
 import { CREDIT_REVIEW, matchFundingGoal } from "./goal-fit";
 import { CAPITAL_PREP, truckingPreparation } from "./capital-prep";
 import { isProvided, requirementsForFunding } from "./documents";
@@ -109,6 +110,15 @@ export function buildPacket(state: FundingState, readiness: ReadinessResult, now
       fix: rule.fix_step,
     })),
     documents,
+    signatures: DISCLOSURES.flatMap((disclosure) => {
+      const consent = state.consents.find((entry) => entry.accepted && entry.signer_name &&
+        entry.disclosure_type === disclosure.type && entry.disclosure_version === disclosure.version);
+      return consent?.signer_name ? [{
+        type: disclosure.type,
+        name: consent.signer_name,
+        date: new Intl.DateTimeFormat("en-US", { dateStyle: "medium", timeZone: "America/Los_Angeles" }).format(new Date(consent.accepted_at)),
+      }] : [];
+    }),
     capitalPreparation: CAPITAL_PREP,
     truckingPreparation: truckingPreparation(state),
     lenderChecklist: [

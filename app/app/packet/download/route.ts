@@ -1,10 +1,12 @@
 import { getFundingUnlock, getReadinessRules, requireFundingContext } from "@/lib/dal";
 import { buildPacket, renderPacketSummary } from "@/lib/funding/packet";
 import { evaluateReadiness } from "@/lib/funding/readiness";
+import { allDisclosuresAccepted } from "@/lib/funding/disclosures";
 
 export async function GET(request: Request) {
   if (!await getFundingUnlock()) return Response.redirect(new URL("/app/packet", request.url));
   const { state } = await requireFundingContext();
+  if (!allDisclosuresAccepted(state.consents)) return Response.redirect(new URL("/app/setup/disclosures", request.url));
   if (!state.readiness) return Response.redirect(new URL("/app/setup/review", request.url));
 
   const now = new Date();
