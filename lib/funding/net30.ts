@@ -1,3 +1,16 @@
+export const PRINTING_VENDORS = [
+  {
+    name: "Shirtsy",
+    use: "Custom work shirts, hoodies, business cards, and promotional products. The vendor advertises no personal guarantee and monthly business-credit reporting. Membership costs $99 per 360-day term. Confirm which bureaus receive payments before enrolling.",
+    url: "https://shirtsy.com/frequently-asked-questions/",
+  },
+  {
+    name: "The CEO Creative",
+    use: "Branded apparel and print supplies. The vendor advertises EIN-only Net 30, no personal guarantee, monthly payment reporting, and a $60 minimum order. Confirm current fees and bureaus before enrolling.",
+    url: "https://theceocreative.com/business-net-30-account/",
+  },
+];
+
 export function invoiceDate(value: FormDataEntryValue | null): string | null {
   if (typeof value !== "string" || !/^[1-9]\d{3}-\d{2}-\d{2}$/.test(value)) return null;
   const date = new Date(value);
