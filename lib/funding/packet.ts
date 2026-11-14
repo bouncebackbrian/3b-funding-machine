@@ -99,6 +99,7 @@ export function buildPacket(state: FundingState, readiness: ReadinessResult, now
     documents,
     lenderChecklist: [
       "Compare the business address and phone in this packet with the supporting documents that show them. Explain legitimate differences, such as a separate registered-agent or mailing address.",
+      "Share the public Company page with the banker so they can review the business name, services, location, phone, and email. Send financials and supporting documents through the lender’s secure channel.",
       "Confirm required ownership records, operating agreement, licenses, and good-standing evidence with the lender.",
       "Break down the use of funds by item and identify the source of any owner contribution.",
       "Document repayment from business cash flow. Include current financial statements or cash-flow projections with assumptions as applicable.",

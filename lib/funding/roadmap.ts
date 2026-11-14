@@ -125,7 +125,7 @@ export function buildRoadmap(state: FundingState, readiness: ReadinessResult): P
     {
       category: "foundation",
       title: "Build your logo and business website",
-      description: "Prepare the logo, business domain, email, and website. Use your accurate business name, services, and contact details. Open the dashboard for the 3B Media handoff.",
+      description: "Prepare the logo, domain, business email, and website. Publish a Company page with your legal name, services, location, phone, and email for bank review. Open the dashboard for the 3B Media handoff.",
       action_url: "/app/dashboard",
     },
   );

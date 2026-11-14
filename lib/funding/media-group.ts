@@ -10,7 +10,7 @@ export type MediaService = "domain" | "website" | "logo" | "email";
 /** `{domain}` is replaced with the business's own domain, or a suggestion built from its legal name. */
 export const MEDIA_SERVICE_COPY: Record<MediaService, { title: string; why: string }> = {
   domain: { title: "Custom domain", why: "Your own name, like {domain}. It's the base for your website and your business email." },
-  website: { title: "Business website", why: "Lenders and vendors look you up. A real site with your name, address and phone builds trust." },
+  website: { title: "Business website", why: "Include a public Company page with the legal business name, services, location, phone, and business email that a banker can review." },
   email: { title: "Matching business email", why: "An address like you@{domain}, so your email matches your website instead of Gmail or Yahoo." },
   logo: { title: "Logo & brand", why: "A consistent logo across your site, invoices and trucks makes the business look established." },
 };
