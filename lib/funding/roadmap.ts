@@ -147,15 +147,15 @@ export function buildRoadmap(state: FundingState, readiness: ReadinessResult): P
     {
       category: "documentation",
       title: "Finish your document package",
-      description: "Upload every required document so your package is complete before any lender sees it.",
+      description: "Update your business plan, bank statements, financials, and supporting records. Confirm which items and date ranges the lender requires.",
       action_url: "/app/setup/documents",
     },
     {
       category: "funding",
       title: "Funding options review",
       description:
-        "Once your package is ready, 3B matches your verified profile against lender programs based on fit only. Matching is not an approval — each lender decides independently.",
-      action_url: null,
+        "Once 3B verifies Funding Desk eligibility, confirm requirements with the bank. Review and download the packet, then have the owner or authorized representative submit it through the bank’s secure channel.",
+      action_url: "/app/packet",
     },
   );
 

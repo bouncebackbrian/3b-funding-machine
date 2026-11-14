@@ -50,7 +50,7 @@ export default async function BankablePacketPage() {
         <Link href="/app/setup/documents">Update documents</Link>
       </section>
       <section className="fm-card fm-stack">
-        <h2 className="fm-h2">Confirm with your lender</h2>
+        <h2 className="fm-h2">Final bank handoff</h2>
         <ul className="fm-mini">{packet.lenderChecklist.map((item) => <li key={item}>{item}</li>)}</ul>
       </section>
       <section className="fm-card fm-stack" id="public-listings">
