@@ -77,6 +77,16 @@ export default async function Dashboard() {
         </section>
       )}
 
+      <section className="fm-card fm-stack">
+        <div>
+          <h2 className="fm-h3">LLC Funding Mode</h2>
+          <p className="fm-muted fm-small">Check a funding scenario and see what to prepare for your LLC.</p>
+        </div>
+        <div>
+          <Link href="/llc-funding" className="fm-btn fm-btn-ghost">Run an LLC readiness check</Link>
+        </div>
+      </section>
+
       <AlignmentGrid checks={alignment} />
       <MediaGroupCta needs={mediaNeeds(alignment)} domain={domainHint(business)} />
 
