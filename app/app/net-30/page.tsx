@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { ActionForm, Field, SubmitButton } from "@/components/form";
 import { getActiveBusiness, verifySession } from "@/lib/dal";
-import { fundingToday, invoiceStatus, PRINTING_VENDORS } from "@/lib/funding/net30";
+import { AFFILIATE_DISCLOSURE, fundingToday, invoiceStatus, PRINTING_VENDORS } from "@/lib/funding/net30";
 import { addInvoice, recordPayment } from "./actions";
 
 const dollars = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
@@ -58,7 +58,12 @@ export default async function Net30Page() {
         <h2 className="fm-h2">Build reporting history</h2>
         <p>Use vendor terms for purchases the business already needs. Ask which business bureaus receive positive payments and check the reports after the vendor’s reporting cycle. Keep the invoice and proof of payment. Use genuine accounts in the company’s name. A payment recorded here is the company’s own record, and the vendor controls bureau reporting.</p>
         <ul className="fm-mini">
-          {PRINTING_VENDORS.map(({ name, use, url }) => <li key={name}><a href={url}>{name}</a> · {use}</li>)}
+          {PRINTING_VENDORS.map(({ name, use, url, affiliate }) => (
+            <li key={name}>
+              <a href={url} rel={affiliate ? "sponsored" : undefined}>{name}</a> · {use}
+              {affiliate && <span className="fm-muted"> {AFFILIATE_DISCLOSURE}</span>}
+            </li>
+          ))}
           <li><a href="https://business.walmart.com/cp/pay-by-invoice/7252775">Walmart Business Pay By Invoice</a> offers Net 30 through TreviPay. Verify guarantee and business credit reporting on the written offer.</li>
           <li><a href="https://www.uline.com/CustomerService/ULINE_FAQ_Ans?FAQ_ID=104">Uline</a> and <a href="https://www.grainger.com/content/mc/policies/terms-of-sale">Grainger</a> offer Net 30 to qualifying accounts. Check the account’s actual terms and reporting.</li>
         </ul>

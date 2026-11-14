@@ -1,4 +1,4 @@
-import { PRINTING_VENDORS } from "./net30";
+import { AFFILIATE_DISCLOSURE, PRINTING_VENDORS, type BusinessCreditVendor } from "./net30";
 import { CREDIT_REVIEW, matchFundingGoal } from "./goal-fit";
 import { CAPITAL_PREP, truckingPreparation } from "./capital-prep";
 import { isProvided, requirementsForFunding } from "./documents";
@@ -8,7 +8,7 @@ import { FUNDING_GOAL_TYPES, type FundingState } from "./types";
 export const PACKET_TITLE = "3B Funding Machine Bankable Readiness Packet";
 export const PACKET_NOTICE = "This packet organizes your financing request and supporting evidence. Confirm the lender’s current requirements before submitting. The lender makes the credit decision.";
 
-export const BUSINESS_CREDIT_EXAMPLES = [
+export const BUSINESS_CREDIT_EXAMPLES: BusinessCreditVendor[] = [
   ...PRINTING_VENDORS,
   {
     name: "Grainger",
@@ -155,7 +155,8 @@ export function renderPacketSummary(packet: BankablePacket, evidence: string[] =
     "", "PUBLIC BUSINESS LISTINGS", PUBLIC_LISTING_GUIDANCE,
     "", "BUSINESS CASH FLOW", CASH_FLOW_GUIDANCE,
     "", "BUSINESS PAYMENT HISTORY", BUSINESS_CREDIT_GUIDANCE,
-    ...BUSINESS_CREDIT_EXAMPLES.map(({ name, use, url }) => `- ${name} — ${use} ${url}`),
+    ...BUSINESS_CREDIT_EXAMPLES.map(({ name, use, url, affiliate }) =>
+      `- ${name} — ${use} ${affiliate ? `${AFFILIATE_DISCLOSURE} ` : ""}${url}`),
     "",
   ].join("\n");
 }
