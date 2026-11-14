@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getReadinessRules, requireFundingContext } from "@/lib/dal";
-import { buildPacket, BUSINESS_CREDIT_EXAMPLES, BUSINESS_CREDIT_GUIDANCE, PACKET_NOTICE, PACKET_TITLE, PUBLIC_LISTING_GUIDANCE } from "@/lib/funding/packet";
+import { buildPacket, BUSINESS_CREDIT_EXAMPLES, BUSINESS_CREDIT_GUIDANCE, CASH_FLOW_GUIDANCE, PACKET_NOTICE, PACKET_TITLE, PUBLIC_LISTING_GUIDANCE } from "@/lib/funding/packet";
 import { DownloadDocuments } from "./download-documents";
 import { evaluateReadiness } from "@/lib/funding/readiness";
 
@@ -27,6 +27,7 @@ export default async function BankablePacketPage() {
         <h2 className="fm-h2">Funding request</h2>
         <dl>{packet.funding.map(([label, value]) => <div key={label}><dt><strong>{label}</strong></dt><dd className="whitespace-pre-wrap">{value}</dd></div>)}</dl>
         <h3 className="fm-h3">Client-reported financials</h3>
+        <p className="fm-muted">{CASH_FLOW_GUIDANCE}</p>
         <dl>{packet.finances.map(([label, value]) => <div key={label}><dt><strong>{label}</strong></dt><dd>{value}</dd></div>)}</dl>
       </section>
       <section className="fm-card fm-stack">
