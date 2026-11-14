@@ -18,6 +18,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         <nav className="fm-nav" aria-label="Main">
           <Link href="/app/dashboard">Dashboard</Link>
           <Link href="/app/roadmap">Roadmap</Link>
+          {active && <Link href="/app/net-30">Net 30</Link>}
         </nav>
         <form action={signOut}>
           <button className="fm-link-btn" type="submit">

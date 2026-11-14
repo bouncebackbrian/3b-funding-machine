@@ -60,6 +60,7 @@ export default async function BankablePacketPage() {
       </section>
       <section className="fm-card fm-stack" id="business-credit">
         <h2 className="fm-h2">Build business payment history</h2>
+        <Link href="/app/net-30">Track Net 30 invoices and payments</Link>
         <p>{BUSINESS_CREDIT_GUIDANCE}</p>
         <ul className="fm-mini">{BUSINESS_CREDIT_EXAMPLES.map((example) => (
           <li key={example.name}><a href={example.url}>{example.name}</a> · {example.use}</li>

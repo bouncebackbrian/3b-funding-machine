@@ -5574,6 +5574,50 @@ export type Database = {
         }
         Relationships: []
       }
+      funding_net30_invoices: {
+        Row: {
+          amount_cents: number
+          business_id: string
+          created_by: string
+          due_on: string
+          id: string
+          invoice_number: string
+          issued_on: string
+          paid_on: string | null
+          vendor: string
+        }
+        Insert: {
+          amount_cents: number
+          business_id: string
+          created_by?: string
+          due_on: string
+          id?: string
+          invoice_number: string
+          issued_on: string
+          paid_on?: string | null
+          vendor: string
+        }
+        Update: {
+          amount_cents?: number
+          business_id?: string
+          created_by?: string
+          due_on?: string
+          id?: string
+          invoice_number?: string
+          issued_on?: string
+          paid_on?: string | null
+          vendor?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "funding_net30_invoices_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       funding_operating_cost_assumptions: {
         Row: {
           beginning_cash: number

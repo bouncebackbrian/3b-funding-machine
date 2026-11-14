@@ -117,7 +117,7 @@ export function buildRoadmap(state: FundingState, readiness: ReadinessResult): P
       category: "credit",
       title: "Review Net 30 and fuel accounts",
       description: "Check the terms and payment reporting for accounts that fit real business expenses. Track due dates and pay on time.",
-      action_url: "/app/packet#business-credit",
+      action_url: "/app/net-30",
     },
     {
       category: "credit",
